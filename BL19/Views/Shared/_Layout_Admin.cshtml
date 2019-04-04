@@ -1,0 +1,66 @@
+﻿@{
+    var siteTitle = "Bill Luckett";
+    var hasPageTitle = ViewData.ContainsKey("Title");
+    var pageTitle = hasPageTitle ? (string)ViewData["Title"] : "";
+    var browserTitle = hasPageTitle ? pageTitle + " - " + siteTitle : siteTitle;
+    var menuOn = ViewData.ContainsKey("MenuOn") ? (string)ViewData["MenuOn"] : pageTitle;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BL19</title>
+
+    <partial name="_FaviconLinksPartial" />
+    <partial name="_LayoutCssPartial" />
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top gradient-navy">
+        <div class="container">
+            <div id="li-home" class="navbar-header" style="padding-left: 15px;">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                    <img src="~/images/BL_Logo_WhiteOnClear.svg" alt="BL Home" class="blLogo" />
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li id="li-users"><a asp-area="" asp-controller="Admin" asp-action="Users">Users</a></li>
+                    <li id="li-roles"><a asp-area="" asp-controller="Admin" asp-action="Roles">Roles</a></li>
+
+@*
+                    <!-- ... OR ... -->
+                    <li id="li-security"><a asp-area="" asp-controller="Admin" asp-action="Index" style="color:#fe0"><b>Security</b></a></li>
+                    <li id="li-blog"><a asp-area="" asp-controller="Blog" asp-action="Admin">Blog</a></li>
+                    <li id="li-concerts"><a asp-area="" asp-controller="Concerts" asp-action="Admin">Concerts</a></li>
+*@
+                </ul>
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
+    </div>
+    <partial name="_CookieConsentPartial" />
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    <partial name="_FooterPartial" />
+    <partial name="_LayoutJsPartial" />
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        var menuOn = ("@menuOn").toLowerCase();
+        $("#li-" + menuOn).css("font-weight", "bold");
+        $("#li-" + menuOn + " > a").css("color", "#91c7ef");
+    </script>
+</body>
+</html>

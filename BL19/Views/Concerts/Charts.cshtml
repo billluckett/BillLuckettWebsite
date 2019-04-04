@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewData["Title"] = "Charts";
+    Layout = "_Layout_Concerts";
+}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="~/js/Concerts/Charts.js"></script>
+
+
+<div class="row">
+    <br />
+    <div class="col-xs-12">
+        <div class="text-center" id="jsBtnsDiv">
+            <script>
+                for (var i = 0; i < charts.length; i++) {
+                    var btn = '<button id="btnId" type="button" class="btn btn-sm btn-primary" style="margin:5px 10px;" onclick="drawChart(' + i + ');">' + charts[i].name + '</button>';
+                    document.write(btn);
+                }
+            </script>
+        </div>
+        <div class="text-center" style="margin-top: 10px;">
+            <label class="radio-inline"><input type="radio" name="pieBarRadio" value="0" onclick="drawChart();" checked>Bar chart</label>
+            <label class="radio-inline"><input type="radio" name="pieBarRadio" value="1" onclick="drawChart();">Pie chart</label>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-xs-12 text-center">
+        <h4 id="chartTitleDiv" class="bluehead"></h4>
+        <div id="chartDiv"></div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        var shows; // for all the concerts data
+        var chartKey = 0; // 0 = draw default chart (Artists as of 20150907)
+        var isGoogleLoaded = false;
+        var waitTime = 3000; // wait 3 seconds for Google to load
+
+        // Load the Visualization API and the piechart package.
+        google.load('visualization', '1.0', { 'packages': ['corechart'] });
+        google.setOnLoadCallback(setGoogleLoaded);
+        function setGoogleLoaded() { isGoogleLoaded = true; };
+
+        // use on page-load before drawing a chart
+        function checkGoogle() {
+            var i = 0;
+            var gTimer = setInterval(function () {
+                if (isGoogleLoaded) {
+                    clearInterval(gTimer);
+                    drawChart();
+                } else {
+                    if (i++ > parseInt(waitTime / 100)) {
+                        clearInterval(gTimer);
+                        alert("Error: Google charts API failed to load after " + parseInt(i / 10) + " seconds");
+                    }
+                }
+            }, 100);
+        }
+
+        // clear title div; if Google-loaded draw chart specified by chartKey; fill title div
+        function drawChart(key) {
+            chartKey = (key == 0) ? 0 : key || chartKey;
+            var chart = charts[chartKey];
+            $("#chartTitleDiv").text("");
+            if (isGoogleLoaded) {
+                var dataArray = chart.func.call();
+                console.log(JSON.stringify(dataArray));
+                finishChart(dataArray, chart);
+                $("#chartTitleDiv").text(chart.title);
+            } else {
+                alert("Error loading Google charts API");
+            }
+        };
+
+        // creates column chart from provided dataArray
+        function finishChart(dataArray, chart) {
+            var data = google.visualization.arrayToDataTable(dataArray);
+            var view = new google.visualization.DataView(data);
+            view.setColumns([0, 1,
+                {
+                    calc: "stringify",
+                    sourceColumn: 1,
+                    type: "string",
+                    role: "annotation"
+                }]);
+
+            var options = {
+                //title: chart.title,
+                width: wChart,
+                bar: { groupWidth: "75%" },
+            };
+
+            if (chart.smText) {
+                options.hAxis = { textStyle: { fontSize: 10, bold: true } };
+            }
+
+            var chart;
+            var wChart = $("#chartDiv").width();
+            var isPie = ($("input[name='pieBarRadio']:checked").val() == 1);
+
+            if (isPie) {
+                chart = new google.visualization.PieChart(document.getElementById('chartDiv'));
+            } else {
+                options.legend = { position: "none" };
+                options.height = wChart * 0.4;
+                chart = new google.visualization.ColumnChart(document.getElementById("chartDiv"));
+            }
+
+            chart.draw(view, options);
+        }
+
+        // document-ready function
+        $(function () {
+            $("#chartDiv").text("Retrieving chart info ...");
+
+            $.post('/Concerts/GetConcertData', function (data) {
+                console.log("SUCCESS! Result is ... " + JSON.stringify(data));
+                shows = data;
+                checkGoogle(); // will draw default chart after Google is loaded
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown);
+                alert(errorThrown);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,176 @@
+﻿
+@{
+    ViewData["Title"] = "Games";
+    ViewData["MenuOn"] = "Projects";
+    Layout = "_Layout_NoContainer";
+}
+
+<style>
+    body {
+        padding-top: 41px;
+    }
+
+    .body-content {
+        padding: 40px 4%;
+        margin: 0px;
+    }
+
+        .body-content.container {
+            width: 100%;
+        }
+
+        .body-content:nth-child(2n) {
+            /*background-color: #e0e8f0;*/
+            /*background-color: #cee0f0;*/
+            /*background-color: #dae0e6;*/
+            /*background-color: #e0e4e8;*/
+            background-color: #e2e4ee;
+        }
+
+        .body-content img {
+            border: 1px solid black;
+            width: auto;
+            margin: 5px auto;
+        }
+
+    p {
+        font-size: 114%;
+        margin: 20px 0px 10px;
+    }
+
+    h3 {
+        margin-top: 0px;
+    }
+</style>
+
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Games &amp; Utilities</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h5 class="sectionTitle"><a class="blueLink" asp-area="" asp-controller="Dice" asp-action="Index">Dice</a></h5>
+                <p>
+                    It's a random-number generator for up to five dice, with a UI that makes it look like
+                    the dice roll for about one second. The dice are SVG elements.
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <div>
+                    <img class="img-responsive" src="/images/ProjectScreenshots/DiceFull.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h5 class="sectionTitle"><a class="blueLink" asp-area="" asp-controller="Cribbage" asp-action="Index">Cribbage Board</a></h5>
+                <p>
+                    It's just like having a functional cribbage board, except you can't lose or break the pegs.
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <div>
+                    <img class="img-responsive" src="/images/ProjectScreenshots/CribbageFull.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h5 class="sectionTitle"><a class="blueLink" asp-area="" asp-controller="Pong" asp-action="Index">Pong</a></h5>
+                <p>
+                    Because I can! Once I got into HTML canvas elements at my day job, I wanted to see how
+                    it would work to replicate the groundbreaking original video game. Imitation is the
+                    sincerest form of flattery.
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <div>
+                    <img class="img-responsive" src="/images/ProjectScreenshots/PongFull.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h5 class="sectionTitle"><a class="blueLink" asp-area="" asp-controller="TicTacToe" asp-action="Index">Tic-Tac-Toe</a></h5>
+                <p>
+                    If you like to code, at some point, you've just got to make tic-tac-toe. Nothing special about
+                    this. In fact, the beginning tutorial for learning React.js has the user make tic-tac-toe,
+                    only better than this. Still, here's a fully functional tic-tac-toe game if you care to play.
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <div>
+                    <img class="img-responsive" src="/images/ProjectScreenshots/TicTacToeFull.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h5 class="sectionTitle"><a class="blueLink" asp-area="" asp-controller="Scoreboard" asp-action="Index">Scoreboard</a></h5>
+                <p>
+                    For when you need to keep score and you don't have pencil and paper handy but you do
+                    have Internet access.
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <div>
+                    <img class="img-responsive" src="/images/ProjectScreenshots/ScoreboardFull.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="body-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h5 class="sectionTitle"><a class="blueLink" asp-area="" asp-controller="VideoPlayer" asp-action="Index">Video Player</a></h5>
+                    <p>
+                        One night, my son made a video on his Kindle that he wanted to share, but it was too large to
+                        upload to our cloud service, so I whipped up a video player and published it to my website,
+                        so he was able to open the video player on his kindle, open the video file he had made, and
+                        we used our Google Chromecast device to watch ... the first 20 minutes (of an hour-long video)
+                        that was among the most boring things I've ever seen. But our 6-year-old was enjoying himself,
+                        so it was so worth it. Plus my wife thought it was hot that I could deploy a solution to our
+                        technical problem just like that.
+                    </p>
+                </div>
+                <div class="col-sm-6">
+                    <div>
+                        (Images coming)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+

@@ -1,0 +1,344 @@
+﻿@{
+    ViewData["Title"] = "Pong";
+    ViewData["MenuOn"] = "Projects";
+}
+
+<style>
+    #messageDiv div {
+        display: inline-block;
+        width: 280px;
+        margin: 0px 5px;
+        text-align: center;
+    }
+</style>
+
+
+<div id="welcomeDiv" class="text-center form-inline form-group">
+    <h3>Welcome to my much-simplified version of the legendary video game Pong</h3>
+    <p>Please enter player names below (leave blank for default). Click "Enter" to begin.</p>
+    <p>
+        <label>Name of Player 1:</label>
+        <input class="form-control" id="userName1" placeholder="Player 1" />
+    </p>
+    <p>
+        <label>Name of Player 2:</label>
+        <input class="form-control" id="userName2" placeholder="Player 2" />
+    </p>
+    <button type="button" class="btn btn-default" onclick="getNames();">Enter</button>
+</div>
+
+<div id="actionDiv">
+    <div class="row" id="statusDiv" style="font-weight:bold;">
+        <div class="col-xs-4" style="text-align:right;font-size:20px;">
+            <span id="p1Name"></span>:
+            <span id="p1Score" style="color:#008"></span>
+        </div>
+        <div class="col-xs-4 text-center" style="font-size:20px;">
+            SCORE
+        </div>
+        <div class="col-xs-4" style="font-size:20px;">
+            <span id="p2Name"></span>:
+            <span id="p2Score" style="color:#800"></span>
+        </div>
+    </div>
+    <br />
+    <div id="gameContainer" style="text-align:center;">
+        <canvas id="gameCanvas" width="100" height="100" style="border:4px solid #555;"></canvas>
+    </div>
+</div>
+<br />
+
+<div id="messageDiv" style="width:880px;margin:0px auto;display:none;">
+    <div id="direxLeft">
+        Player 1 move up: a s d f<br>
+        Player 1 move down: z x c v
+    </div>
+    <div id="direxCenter">
+        Press the spacebar<br>
+        to start, or pause, game.
+    </div>
+    <div id="direxRight">
+        Player 2 move up: j k l ; '<br>
+        Player 2 move down: n m , . /
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        //CONSTANTS
+        var WC = 800; // ideal width of the court; height is 5/8 of width
+        var WL = 1; // width of the lines;
+        var P1NAME = "Player 1";
+        var P2NAME = "Player 2";
+        var PADDLE_SPEED = 1.5;
+        var BALL_SPEED = 1; // 20 / BALL_SPEED  = number of milliseconds between ball movements
+
+        var p1 = {
+            name: "",
+            score: 0,
+            x: 0,
+            y: 0,
+            goal: 0
+        };
+        var p2 = {
+            name: "",
+            score: 0,
+            x: 0,
+            y: 0,
+            goal: 0
+        };
+
+        var ball = {
+            x: 0,
+            y: 0,
+            xdir: 2,
+            ydir: 1
+        }
+
+        var gameOn = false; // true means game is active; false means game is paused
+
+        var c = document.getElementById("gameCanvas");
+        var ctx = c.getContext("2d");
+        var w, h, wp, hp; // width and height of the playing court and paddles
+
+        document.body.addEventListener("keydown", function (e) {
+            process(e.keyCode);
+        });
+
+
+        // handle keyboard input
+        function process(code) {
+            //alert("" + code);
+            switch (code) {
+                case 32: // spacebar; starts/pauses game
+                    toggleGame();
+                    break;
+
+                // A S D F a s d f ... moves p1 up
+                case 65:
+                case 83:
+                case 68:
+                case 70:
+                case 97:
+                case 115:
+                case 100:
+                case 102:
+                    movePlayer(p1, -wp * PADDLE_SPEED);
+                    break;
+
+                // C V X Z c v x z ... moves p1 down
+                case 67:
+                case 86:
+                case 88:
+                case 90:
+                case 99:
+                case 118:
+                case 120:
+                case 122:
+                    movePlayer(p1, +wp * PADDLE_SPEED);
+                    break;
+
+                // J K L : " j k l ; ' ... moves p2 up
+                case 74:
+                case 75:
+                case 76:
+                case 58:
+                case 34:
+                case 106:
+                case 107:
+                case 108:
+                case 59:
+                case 39:
+                case 186:
+                case 222:
+                    movePlayer(p2, -wp * PADDLE_SPEED);
+                    break;
+
+                // M N < > ? m n , . / ... moves p2 down
+                case 77:
+                case 78:
+                case 60:
+                case 62:
+                case 63:
+                case 109:
+                case 110:
+                case 44:
+                case 46:
+                case 47:
+                case 188:
+                case 190:
+                case 191:
+                    movePlayer(p2, +wp * PADDLE_SPEED);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        function toggleGame() {
+            gameOn = !gameOn;
+        }
+
+        function movePlayer(p, direx) {
+            if (gameOn) {
+                p.y += direx;
+                if (p.y < 0) {
+                    p.y = 0;
+                } else if (p.y + hp > h) {
+                    p.y = h - hp;
+                }
+            }
+        }
+
+        $(function () {
+            setDimensions();
+            $("#actionDiv").hide();
+            $("#messageDiv").hide();
+            $("#userName1, #userName2").val("");
+            $("#welcomeDiv").show();
+            //getNames(); // comment this out to get name dynamically; else it's "Player 1" and "Player 2"
+            initGame();
+            setInterval(moveBall, 20 / BALL_SPEED);
+            setInterval(drawGame, 30);
+        });
+
+        // sets the size of the court, based on the size of the browser
+        function setDimensions() {
+            w = $("#gameContainer").width();
+            w = (w < WC + 40) ? w - 40 : WC;
+            $("#gameCanvas").attr("width", "" + w);
+            h = w * 5 / 8;
+            $("#gameCanvas").attr("height", "" + h);
+            hp = h / 5; // height of the paddles
+            wp = w / 80; // width of the paddles
+        }
+
+        function getNames() {
+            $("#welcomeDiv").hide();
+            p1.name = $("#userName1").val();
+            if (p1.name == "") p1.name = P1NAME;
+            p2.name = $("#userName2").val();
+            if (p2.name == "") p2.name = P2NAME;
+            showNames();
+            $("#actionDiv").show();
+            $("#messageDiv").show();
+            //$("#direxLeft").text("left");
+            //$("#direxRight").text("right");
+            //$("#direxCenter").text();
+        }
+
+        function initGame() {
+            gameOn = false;
+            updateScores();
+            initBall();
+            initPlayers();
+            ball.xdir = -ball.xdir;
+        }
+
+        function showNames() {
+            $("#p1Name").text("" + p1.name.toUpperCase());
+            $("#p2Name").text("" + p2.name.toUpperCase());
+        }
+
+        function updateScores() {
+            $("#p1Score").text("" + p1.score);
+            $("#p2Score").text("" + p2.score);
+        }
+
+        function initBall() {
+            ball.x = w / 2;
+            ball.y = h / 2;
+        }
+
+        function initPlayers() {
+            p1.goal = w / 20;
+            p1.x = p1.goal + 1;
+            p1.y = h / 2 - hp / 2;
+            p2.goal = w - w / 20;
+            p2.x = p2.goal - 1;
+            p2.y = p1.y;
+        }
+
+        function moveBall() {
+            if (gameOn) {
+                ball.x += ball.xdir;
+                ball.y += ball.ydir;
+            }
+
+            if (ball.x - wp <= p1.goal) {
+                if (saved(p1)) {     // if paddle in position
+                    ball.xdir = -ball.xdir;
+                } else {
+                    p2.score++;
+                    initGame();
+                }
+            } else if (ball.x + wp >= p2.goal) {
+                if (saved(p2)) {     // if paddle in position
+                    ball.xdir = -ball.xdir;
+                } else {
+                    p1.score++;
+                    initGame();
+                }
+            }
+
+            if ((ball.y - wp <= 0) || (ball.y + wp >= h)) {
+                ball.ydir = -ball.ydir;
+            }
+        }
+
+        function saved(p) {
+            return (ball.y > p.y && ball.y < p.y + hp);
+        }
+
+        function drawGame() {
+            // color the court
+            ctx.fillStyle = "#8c8"; // green
+            ctx.fillRect(0, 0, w, h);
+
+            // set line width & color
+            ctx.lineWidth = WL;
+            //ctx.strokeStyle = "#555"; // gray
+            ctx.strokeStyle = "#000"; // black
+
+            // draw midfield
+            ctx.moveTo(w / 2, 0);
+            ctx.lineTo(w / 2, h);
+            ctx.stroke();
+
+            // color goals
+            ctx.fillStyle = "#008";
+            ctx.fillRect(0, 0, w / 20, h);
+            ctx.fillStyle = "#800";
+            ctx.fillRect(w - w / 20, 0, w, h);
+
+            // draw goal lines
+            ctx.moveTo(p1.goal, 0);
+            ctx.lineTo(p1.goal, h);
+            ctx.stroke();
+            ctx.moveTo(p2.goal, 0);
+            ctx.lineTo(p2.goal, h);
+            ctx.stroke();
+
+            // draw paddles
+            ctx.fillStyle = "#fff";
+            ctx.lineWidth = 1;
+            ctx.rect(p1.x, p1.y, -wp, hp);
+            ctx.stroke();
+            ctx.fill();
+            ctx.rect(p2.x, p2.y, wp, hp);
+            ctx.stroke();
+            ctx.fill();
+
+            // draw ball
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, wp, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.fill();
+        }
+    </script>
+}
+
+

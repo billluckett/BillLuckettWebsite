@@ -1,0 +1,162 @@
+﻿@using BL19.Models.ConcertModels;
+
+@model IEnumerable<Concert>
+
+@{
+    ViewData["Title"] = "Concerts";
+    Layout = "_Layout_Concerts";
+
+    DateTime birthday = DateTime.Parse("1972-10-10");
+    DateTime testDay = birthday;
+    int halfYears = -1;
+    while (testDay < DateTime.Now)
+    {
+        halfYears++;
+        testDay = testDay.AddMonths(6);
+    }
+
+    string age = "" + (halfYears / 2) + ((halfYears % 2 == 1) ? " and a half" : "");
+}
+
+<style>
+    th, td {
+        border: 1px solid black;
+        vertical-align: top;
+    }
+
+    th {
+        text-align: center;
+        background-color: darkgreen;
+        color: white;
+        font-weight: bold;
+    }
+
+    td {
+        font-size: 12px;
+    }
+
+    .rowDark {
+        background-color: #eeeeee;
+    }
+</style>
+
+<h3 class="bluehead text-center">Rock shows I have seen, by Bill Luckett</h3>
+<!--Alternate headline; a little too cutesy for public display ... probably-->
+@*<h3 class="bluehead text-center">Rock shows I have seen, by Bill Luckett, age @age</h3>*@
+
+<div class="row">
+    <div class="col-xs-12">
+        <table id="concertsTable" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Era</th>
+                    <th id="dateColHead">Date</th>
+                    <th>Artist(s)</th>
+                    <th>Venue</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Tour</th>
+                    <th>Companion(s)</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var i = 0;
+                    foreach (var c in Model)
+                    {
+                        var rClass = (i % 2 == 1) ? "rowDark" : "";
+                        <tr class="@rClass">
+                            <td>@c.Era.Name</td>
+                            <td>@c.Date.ToString("d")</td>
+                            <td>
+                                @{
+                                    var artists = c.GetArtists().ToArray();
+                                    for (var j = 0; j < artists.Length; j++)
+                                    {
+                                        <p style="margin:0px auto;">@artists[j].Name</p>
+                                    }
+                                }
+                            </td>
+                            <td>@c.Venue.Name</td>
+                            <td>@c.City</td>
+                            <td>@c.State</td>
+                            <td>@c.Tour</td>
+                            <td>
+                                @{
+                                    var people = c.GetPeople().ToArray();
+                                    for (var j = 0; j < people.Length; j++)
+                                    {
+                                        <p style="margin:0px auto;">@people[j].Name</p>
+                                    }
+                                }
+                            </td>
+                            <td>@c.Notes</td>
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts
+{
+<script type="text/javascript">
+    var lastSort = { col: -1, direx: -1 };
+
+    // returns true if dstring can be used to construct a valid date
+    function isValidDate(dstring) {
+        var d = new Date(dstring);
+        return (Object.prototype.toString.call(d) === "[object Date]" && !isNaN(d.getTime()));
+    }
+
+    // helper for sortTable()
+    function sortFunc(a, b) {
+        if (isValidDate(a) && isValidDate(b)) {
+            return (new Date(a)) - (new Date(b));
+        }
+        return (a <= b) ? -1 : 1;
+    }
+
+    // sorts html table by values in the column of the specified table-heading
+    function sortTable(th, colIdx) {
+        var rows = $(th).closest("table").find("tbody > tr");
+        var rowsData = [];
+
+        rows.each(function (i, el) {
+            var row = $(el);
+            rowsData[i] = {
+                html: row.html(),
+                key: row.children("td:nth-child(" + (colIdx + 1) + ")").html()
+            };
+        });
+
+        if (lastSort.col == colIdx && lastSort.direx == 0) {
+            rowsData.sort(function (a, b) { return sortFunc(b.key, a.key); });
+            lastSort.direx = 1;
+        } else {
+            rowsData.sort(function (a, b) { return sortFunc(a.key, b.key); });
+            lastSort.direx = 0;
+        }
+        lastSort.col = colIdx;
+
+        rows.each(function (i, el) {
+            $(el).html(rowsData[i].html);
+        });
+    }
+
+    // make all tables sortable by giving each column header sortTable() click function
+    $("table").each(function () {
+        $(this).find("th").each(function (i, el) {
+            $(el).on("click", function () { sortTable(el, i); });
+        });
+    });
+
+    $(function () {
+        $("#dateColHead").click(); // sort table initially by concert date
+    });
+</script>
+}

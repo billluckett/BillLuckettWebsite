@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>aspnet-BL19-9780D693-04D5-4063-A355-12F2C992404E</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20190310062134_FixAppDbContext.cs" />
+    <Compile Remove="Data\Migrations\20190310062134_FixAppDbContext.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190310072216_FixAppDbContext5.cs" />
+    <Compile Remove="Data\Migrations\20190310072216_FixAppDbContext5.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190310072514_FixAppDbContext5.cs" />
+    <Compile Remove="Data\Migrations\20190310072514_FixAppDbContext5.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190310155104_ElimDiscrim1.cs" />
+    <Compile Remove="Data\Migrations\20190310155104_ElimDiscrim1.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.7" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="wwwroot\images\logos\" />
+  </ItemGroup>
+
+</Project>

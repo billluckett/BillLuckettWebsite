@@ -1,0 +1,138 @@
+﻿@model BlogViewModel
+
+@{
+    Layout = "_Layout_Blog";
+}
+
+<style>
+    .entry {
+        margin: 5px 0px;
+    }
+
+    .entryTitle {
+        margin-bottom: 7px;
+        /*font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;*/
+        /*font-weight: bold;*/
+    }
+
+    .dateRow {
+        font-size: 0.85em;
+        margin-bottom: 15px;
+    }
+
+    .entryContent {
+        margin-bottom: 15px;
+    }
+
+    .categoryRow {
+        font-size: 0.85em;
+        margin-bottom: 10px;
+    }
+
+    h4 {
+        font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+    }
+
+    h4.feed-item-title {
+        font-size: 14px;
+    }
+
+    h5, h5 a {
+        font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+        font-size: 16px;
+        font-weight: bold;
+        color: darkblue;
+    }
+</style>
+
+@if (!string.IsNullOrWhiteSpace(Model.HeaderImage))
+{
+    var imagePath = "/images/Blog/Headers/" + Model.HeaderImage;
+    @section headerimage {
+        <img src="@imagePath" class="img-responsive" />
+    }
+}
+else
+{
+    var headerTitle = ((string)ViewData["Title"] == "Blog") ? "Bill's Blog" : (string)ViewData["Title"];
+    <h2>@headerTitle</h2>
+}
+
+<div class="row">
+    <div class="col-sm-8">
+        @foreach (var item in Model.Entries)
+        {
+            TimeZoneInfo pstZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var createdPst = TimeZoneInfo.ConvertTimeFromUtc(item.CreatedOn, pstZone);
+            var createdZone = pstZone.IsDaylightSavingTime(createdPst) ? "PDT" : "PST";
+            var created = createdPst.ToString("d") + " " + createdPst.ToString("t") + " " + createdZone;
+            var modifiedPst = TimeZoneInfo.ConvertTimeFromUtc(item.ModifiedOn, pstZone);
+            var modifiedZone = pstZone.IsDaylightSavingTime(modifiedPst) ? "PDT" : "PST";
+            var modified = modifiedPst.ToString("d") + " " + modifiedPst.ToString("t") + " " + modifiedZone;
+
+                <div class="row">
+                <div class="col-xs-12 entry">
+                    <h3 class="entryTitle">@item.Title</h3>
+
+                    <div class="dateRow">
+                        Posted: @created
+                        @if (!item.CreatedOn.Equals(item.ModifiedOn))
+                        {
+                            <span style="margin-left: 10px;">Updated: @modified</span>
+                        }
+                    </div>
+
+                    <div class="entryContent">
+                        @Html.Raw(item.Content)
+                    </div>
+                    <div class="categoryRow">
+                        Categories:
+
+                        @if (item.EntryCategories != null)
+                        {
+                            var cats = item.EntryCategories.OrderBy(o => o.CategoryId).Select(s => s.Category.Name);
+                            <span> @string.Join(", ", cats)</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-sm-4">
+        @if (Model.RightSide != null)
+        {
+            @Html.Partial(Model.RightSide)
+        }
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        function getRssFeed(feedUrl, $rssContentDiv) {
+            var yqlUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20title%2Clink%2Cdescription%20from%20rss%20where%20url%3D%22";
+            var params = "?format=xml%22&format=json&callback=";
+            var fullUrl = yqlUrl + feedUrl + params;
+
+            $.getJSON(fullUrl, function (data) {
+                //alert(JSON.stringify(data));
+                items = data.query.results.item;
+                var html = "";
+                var showme = true;
+
+                for (var i = 0; i < items.length; i++) {
+                    item = items[i];
+                    html += '<a href="' + item.link + '" target="_blank"><div style="padding-bottom:7px;">' + item.title;
+                    html += '</div></a>';
+                }
+                $rssContentDiv.html(html);
+            }, "jsonp")
+                .done(function () {
+                    //alert("Done: Success!");
+                })
+                .fail(function (e) {
+                    //alert("Fail: " + JSON.stringify(e));
+                });
+        }
+    </script>
+}

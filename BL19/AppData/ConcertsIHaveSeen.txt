@@ -1,0 +1,45 @@
+Era	Date	Date Notes	Band	Band2	Band3	Band4	Band5	Arena	City	St	Tour	With	With2	With3	With4	With5
+High School	8/10/1990		They Might Be Giants					Utah State Fairpark Coliseum	Salt Lake City	UT		Jason Marsden				
+High School	9/1/1989		Bon Jovi	Skid Row				Casper Events Center	Casper	WY	New Jersey Tour	Bert Weidt				
+College WPI	10/30/1991	or 10/31/1991	Van Halen	Alice in Chains				Worcester Centrum	Worcester	MA		Marcus Bracke	some Zeta Psis			
+College WPI	12/14/1991	probably???	Mighty Mighty Bosstones	Antfarm				WPI (Pub? Gompei's Place?)	Worcester	MA						
+College WPI	1/24/1992	probably???	Mighty Mighty Bosstones					Worcester Artist Group	Worcester	MA						
+College WPI	3/14/1992	probably???	Mighty Mighty Bosstones					Heart of the Commonwealth Theater	Worcester	MA						
+College WPI	4/25/1992		Steve Miller Band	Kinks	Midnight Oil	Violent Femmes	Indigo Girls	Foxboro Stadium	Foxboro	MA	Earth Day Concert	Rob Weitz	other I2s			
+College WPI	6/5/1992		Metallica					Casper Events Center	Casper	WY		Erin Fowler				
+College WPI	9/5/1992		Violent Femmes	B-52s				Great Woods Center for the Performing Arts	Mansfield	MA		Marcus Bracke	some other TKEs			
+College WPI	9/12/1992		They Might Be Giants					Hatch Shell	Boston	MA	free!	Marcus Bracke	Rob Weitz			
+College WPI	10/21/1992		U2					Mile High Stadium	Denver	CO	Zoo TV Tour	Erin Fowler				
+College Sheridan	7/1/1993		Primus	Alice in Chains	Dinosaur Jr.	Arrested Development	Fishbone	Fiddler's Green	Denver	CO	Lollapalooza	Vince Schutte				
+College UW	4/1/1994	spring 1994	Big Head Todd and the Monsters					A&S Auditorium	Laramie	WY		Vince Schutte				
+College UW	4/2/1994	spring(?) 1994	Samples					Wyoming Union	Laramie	WY						
+College UW	6/18/1994		Grateful Dead	Cracker				Autzen Stadium	Eugene	OR		Kim the waitress	Tim the cook			
+College UW	6/19/1994		Grateful Dead	Cracker				Autzen Stadium	Eugene	OR		Kim the waitress	Tim the cook			
+College UW	11/28/1994	11 people!	Phish					Montana St. U. Field House	Bozeman	MT		Sarah Frazer	Vince Schutte	Jason Marsden	Brianna Johnson	Krista Patten
+College UW	5/1/1995		Beastie Boys	John Spencer Blues Explosion				Denver Coliseum	Denver	CO		Vince Schutte				
+College UW	5/24/1995	or 5/25/1995	R.E.M.	Sonic Youth				Fiddler's Green	Denver	CO	Monster Tour					
+College UW	6/10/1995		Phish					Red Rocks	Denver	CO		Vince Schutte				
+College UW	6/16/1995		Pearl Jam					Casper Events Center	Casper	WY	Vitalogy Tour	Jake Bendrick	Scott Brown			
+Casper	11/16/1997		Phish					McNichols Arena	Denver	CO		Jason Marsden	Jason Horsley	Dan Leonard		
+Casper	11/17/1997		Phish					McNichols Arena	Denver	CO		Jason Marsden				
+Casper	8/23/1998		Sarah McLaughlin	Sheryl Crow				Fiddler's Green	Denver	CO	Lilith Fair	Vanessa Hastings	Melissa Davidson	Ryan Johnson		
+Casper	10/24/1998		Blues Traveler					UW Fine Arts Concert Hall	Laramie	WY		lots from the CST				
+Casper	11/4/1998		Phish					McNichols Arena	Denver	CO		Jason Marsden	Jeff Tollefson			
+Casper	7/4/1999	no idea what year	Blues Traveler					Red Rocks	Denver	CO		Zach Snyder	others			
+Cheyenne	8/25/1999		Moody Blues					Casper Events Center	Casper	WY		Kathy McManus	Bernie McManus			
+Cheyenne	11/18/1999		Indigo Girls					A&S Auditorium	Laramie	WY		Kelly Milner				
+Cheyenne	1/15/2000		Def Leppard	Joan Jett				Casper Events Center	Casper	WY		Kathy McManus	Bernie McManus	Tom Morton		
+Cheyenne	3/26/2000	or 7/13/2003	Bob Dylan					Casper Events Center	Casper	WY		Erin Fowler	Brian Fowler			
+Cheyenne	7/25/2000		Dave Matthews Band					Mile High Stadium	Denver	CO		Vanessa Hastings	Melissa Davidson			
+Cheyenne	7/11/2001		Dave Matthews Band					Folsom Field	Boulder	CO		Erin Fowler				
+Cheyenne	3/25/2002		Styx	REO Speedwagon				Casper Events Center	Casper	WY		Jim Diehl	Junior Diehl	Junior Diehl's girlfriend		
+Cheyenne	8/19/2002		Tom Petty					Red Rocks	Denver	CO		Ron Roden	Kari Keating	Ryan Roden?		
+Cheyenne	2/18/2003		Phish					Pepsi Center	Denver	CO		Laura Gervais				
+Cheyenne	7/18/2003		Staind					Frontier Park	Cheyenne	WY	Frontier Days	Jen Cousins				
+Cheyenne	7/20/2003	or 7/22/2001	3 Doors Down					Frontier Park	Cheyenne	WY	Frontier Days					
+Cheyenne	9/13/2003	or 9/14/2003	R.E.M.	Wilco	Ed Harcourt			Red Rocks	Denver	CO		Phil Ellsworth				
+Cheyenne	9/19/2003		White Stripes					Fillmore	Denver	CO		Chelsea Robirds				
+Cheyenne	6/5/2005	or 9/30/2004	Pixies					Red Rocks	Denver	CO		Chelsea Robirds				
+Cheyenne	7/2/2006	or 7/3/2006	Tom Petty	Pearl Jam				Pepsi Center	Denver	CO		Jenni Luckett				
+Cheyenne	7/5/2006		Counting Crows	Goo Goo Dolls				Red Rocks	Denver	CO		Jenni Luckett				
+Forest Grove	8/12/2014		Tom Petty	Steve Winwood				Moda Center	Portland	OR		Jenni Luckett				

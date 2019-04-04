@@ -1,0 +1,25 @@
+<svg height="256" width="256" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <rect x="8" y="8" rx="16" ry="16" width="240" height="240" style="fill:none;stroke:white;stroke-width:16"/>
+  <g stroke="white" stroke-width="24" fill="none">
+    <path d="
+			      M 56 148
+			      L 56 60
+			      A 4 4 0 0 1 60 56
+			      L 80 56
+			      A 24 24 0 0 1 80 104
+			      L 56 104
+			      L 88 104
+			      A 24 24 0 0 1 88 152
+			      L 60 152
+			      A 4 4 0 0 1 56 148
+
+			      M 152 104
+			      C 152 103 152 103 152 104
+			      L 152 196
+			      A 4 4 0 0 0 156 200
+			      L 200 200
+			      C 201 200 201 200 200 200
+			      " />
+  </g>
+  Home
+</svg>

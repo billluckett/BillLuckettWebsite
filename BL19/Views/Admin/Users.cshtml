@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ApplicationUserListViewModel>
+@using BL19.Models
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "_Layout_Admin";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="btn-group">
+    <a id="createEditUserModal" data-toggle="modal" asp-action="AddApplicationUser" data-target="#modal-action-user" class="btn btn-sm btn-primary">
+        <i class="glyphicon glyphicon-plus"></i>  Add User
+    </a>
+</div>
+<table class="table table-bordered table-striped table-condensed" style="margin-top:15px;">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Username</td>
+                <td>@item.Email</td>
+                <td>@item.Roles</td>
+                <td>
+                    <a id="editUserModal" data-toggle="modal" asp-action="EditApplicationUser" asp-route-id="@item.Id" data-target="#modal-action-user" class="btn btn-xs btn-info">
+                        <i class="glyphicon glyphicon-pencil"></i>  Edit
+                    </a>
+                    <a id="deleteUserModal" data-toggle="modal" asp-action="DeleteApplicationUser" asp-route-id="@item.Id" data-target="#modal-action-user" class="btn btn-xs btn-danger">
+                        <i class="glyphicon glyphicon-trash"></i>  Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.Partial("_Modal", new BootstrapModel { ID = "modal-action-user", AreaLabeledId = "modal-action-user-label", Size = ModalSize.Medium })
+
+<script>
+    (function ($) {
+        function User() {
+            var $this = this;
+
+            function initilizeModel() {
+                $("#modal-action-user").on('loaded.bs.modal', function (e) {
+
+                }).on('hidden.bs.modal', function (e) {
+                    $(this).removeData('bs.modal');
+                }).on('shown.bs.modal', function () {
+                    $("input#Name").focus();
+                });
+            }
+            $this.init = function () {
+                initilizeModel();
+            }
+        }
+        $(function () {
+            var self = new User();
+            self.init();
+        })
+    }(jQuery))
+</script>

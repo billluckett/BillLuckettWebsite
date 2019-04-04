@@ -1,0 +1,53 @@
+@model EntryViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    ViewData["MenuOn"] = "Blog";
+    Layout = "_Layout_Blog";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Entry</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Entry.Content)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Entry.Content)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Entry.CreatedOn)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Entry.CreatedOn)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Entry.ModifiedOn)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Entry.ModifiedOn)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Entry.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Entry.Title)
+        </dd>
+        <dt>
+            Categories
+        </dt>
+        <dd>
+            @{
+                var ccats = Model.Categories.Where(c => Model.ActiveCategoryIds.Contains(c.Id)).Select(c => c.Name);
+                <span>@string.Join(", ", ccats)</span>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Entry.Id">Edit</a> |
+    <a asp-action="Admin">Back to List</a>
+</div>

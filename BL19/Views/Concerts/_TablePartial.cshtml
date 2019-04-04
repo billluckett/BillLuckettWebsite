@@ -1,0 +1,35 @@
+﻿@model ICollection<object>
+@using System.Reflection
+
+<input style="display:none;" class="count" value="@Model.Count()" />
+
+@if (Model.Count > 0)
+{
+    <div class="table-container">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr>
+                    @foreach (PropertyInfo propertyInfo in Model.First().GetType().GetProperties())
+                    {
+                        <th>@propertyInfo.Name</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        @foreach (PropertyInfo propertyInfo in obj.GetType().GetProperties())
+                        {
+                            <td>@propertyInfo.GetValue(obj)</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p>No table rows to display</p>
+}

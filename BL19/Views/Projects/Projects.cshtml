@@ -1,0 +1,157 @@
+﻿@model Project[]
+
+@{
+    ViewData["Title"] = "Projects";
+    Layout = "_Layout_NoContainer";
+
+    var items2 = Model;
+    var items = new Project[]
+    {
+        new Project()
+        {
+            Title = "Blog",
+            Link = "Blog",
+            Description = @"My blog. Navbar menu items filter entries by category. Entries can be in
+                multiple categories. Full CRUD operations available to logged in user with admin role.
+                Data stored in Azure SQL.",
+            ImageFull = "BlogFull.png",
+            ImageMobile = "BlogMobile.png"
+        },
+        new Project()
+        {
+            Title = "Concerts",
+            Link = "Concerts",
+            Description = @"This app uses the Google Charts API to produce data-analysis bar graphs and
+                pie charts using the SQL data of all the significant rock shows I've seen.",
+            ImageFull = "ConcertsFull.png",
+            ImageMobile = "ConcertsMobile.png"
+        },
+        new Project()
+        {
+            Title = "Electoral Map",
+            Link = "ElectoralMap",
+            Description = @"Interactive U.S. map that lets the user set the likelihood of each state voting
+                for the Democratic or Republican presidential candidate. The map and drag-and-drop buttons
+                at the top of the page remain in sync, and the page updates the electoral vote tally based
+                on the user's input.",
+            ImageFull = "ElectoralMapFull.png",
+            //ImageMobile = "ElectoralMapMobile.png"
+        },
+        new Project()
+        {
+            Title = "Other Games & Utilities",
+            Link = "Games",
+            Description = @"Assorted one-page apps that might be fun (Pong, Cribbage Board) or maybe useful
+                (Dice, Scoreboard) depending on your needs. You can also get to these apps from the
+                'Games & Utilities' drop-down menu under the 'Projects' drop-down in the navbar."
+        }
+    };
+}
+
+<style>
+    body {
+        padding-top: 41px;
+    }
+
+    .body-content {
+        padding: 40px 4%;
+        margin: 0px;
+    }
+
+        .body-content.container {
+            width: 100%;
+        }
+
+        .body-content:nth-child(2n) {
+            /*background-color: #e0e8f0;*/
+            /*background-color: #cee0f0;*/
+            /*background-color: #dae0e6;*/
+            /*background-color: #e0e4e8;*/
+            background-color: #e2e4ee;
+        }
+
+        .body-content img {
+            border: 1px solid black;
+            width: auto;
+            margin: 5px auto;
+        }
+
+    p {
+        font-size: 114%;
+        margin: 20px 0px 10px;
+    }
+
+    h3 {
+        margin-top: 0px;
+    }
+
+    .imgFull, .imgMobile {
+        display: inline;
+    }
+
+    .imgFull {
+        max-width: 400px;
+    }
+
+    .imgMobile {
+        max-width: 133px;
+    }
+
+    .spacer30 {
+        display: inline;
+        min-width: 30px;
+    }
+</style>
+
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Hobby programming projects</h3>
+                <p>
+                    You can also check out the items in the drop-down menu for Projects in the navigation bar
+                    to see everything I have displayed on this site.&nbsp;&nbsp;- Bill
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@for (var i = 0; i < items.Length; i++)
+{
+    <div class="body-content">
+        <div class="container">
+            <div class="row">
+                @if (!string.IsNullOrWhiteSpace(items[i].ImageFull))
+                {
+                    var srcFull = "/images/ProjectScreenshots/" + items[i].ImageFull;
+                    var srcMobile = "/images/ProjectScreenshots/" + items[i].ImageMobile;
+                    <div class="col-sm-5">
+                        <h5 class="sectionTitle"><a class="blueLink" href="@items[i].Link">@items[i].Title</a></h5>
+                        <p>@items[i].Description</p>
+                    </div>
+                    <div class="col-sm-7">
+                        <div>
+                            <img class="img-responsive imgFull" src="@srcFull" />
+                            @if (!string.IsNullOrWhiteSpace(items[i].ImageMobile))
+                            {
+                                <div class="spacer30">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                <img class="img-responsive imgMobile" src="@srcMobile" />
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-sm-12">
+                        <h5 class="sectionTitle"><a class="blueLink" href="@items[i].Link">@items[i].Title</a></h5>
+                        <p>@items[i].Description</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

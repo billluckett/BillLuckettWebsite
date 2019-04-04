@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Video Player";
+    ViewData["MenuOn"] = "Projects";
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>IF you're hooked up for Chromecast ...</h1>
+        <video width="320" height="240" controls></video>
+        <p>
+            This web page will enable you to play any video from your computer in your browser.<br />
+            If you have a browser (like Chrome) with an extension (like Google Cast) that can send<br />
+            video from your browser to a device plugged into your TV (like a Chromecast device) ...<br />
+            well, that's what my family has used this for. Hopefully you'll find a use for it as well.<br />
+            Anyway, why not give it a shot ...
+        </p>
+        <p>
+            Select a video from your computer to play in the browser:
+            <input type="file" onchange="loadVideo()" accept="video/*" />
+        </p>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        function loadVideo() {
+            var input = document.querySelector("input");
+            var video = document.querySelector('video');
+            var file = input.files[0];
+            var URL = window.URL || window.webkitURL;
+            var fileURL = URL.createObjectURL(file);
+            video.src = fileURL;
+        }
+    </script>
+
+}
+

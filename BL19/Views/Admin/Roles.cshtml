@@ -1,0 +1,73 @@
+﻿@model IEnumerable<ApplicationRoleListViewModel>
+@using BL19.Models
+
+@{ 
+    ViewData["Title"] = "Roles";
+    Layout = "_Layout_Admin";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="btn-group">
+    <a id="createRoleModal" data-toggle="modal" asp-action="AddEditApplicationRole" data-target="#modal-action-application-role" class="btn btn-sm btn-primary">
+        <i class="glyphicon glyphicon-plus"></i>  Add Role
+    </a>
+</div>
+<table class="table table-bordered table-striped table-condensed" style="margin-top:15px;">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Users</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RoleName</td>
+                <td>@item.Description</td>
+                <td>@item.NumberOfUsers</td>
+                <td>
+                    <a id="addEditApplicationRoleModal" data-toggle="modal" asp-action="AddEditApplicationRole" asp-route-id="@item.Id" data-target="#modal-action-application-role" class="btn btn-xs btn-info">
+                        <i class="glyphicon glyphicon-pencil"></i>  Edit
+                    </a>
+                    @if (item.NumberOfUsers == 0)
+                    {
+                        <a id="deleteApplicationRoleModal" data-toggle="modal" asp-action="DeleteApplicationRole" asp-route-id="@item.Id" data-target="#modal-action-application-role" class="btn btn-xs btn-danger">
+                            <i class="glyphicon glyphicon-trash"></i>  Delete
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.Partial("_Modal", new BootstrapModel { ID = "modal-action-application-role", AreaLabeledId = "modal-action-application-role-label", Size = ModalSize.Medium })
+
+<script>
+    (function ($) {
+        function ApplicationRole() {
+            var $this = this;
+
+            function initilizeModel() {
+                $("#modal-action-application-role").on('loaded.bs.modal', function (e) {
+
+                }).on('hidden.bs.modal', function (e) {
+                    $(this).removeData('bs.modal');
+                }).on('shown.bs.modal', function () {
+                    $("input#RoleName").focus();
+                });
+            }
+            $this.init = function () {
+                initilizeModel();
+            }
+        }
+        $(function () {
+            var self = new ApplicationRole();
+            self.init();
+        })
+    }(jQuery))
+</script>

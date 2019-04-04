@@ -1,0 +1,598 @@
+﻿@{
+    ViewData["Title"] = "Cribbage";
+    ViewData["MenuOn"] = "Projects";
+}
+
+<style>
+    .peg .live {
+    }
+
+    #optionsControl {
+        margin: 10px 0px;
+        font-size: 1.2em;
+    }
+
+        #optionsControl:hover {
+            cursor: pointer;
+        }
+</style>
+<script>
+    var colorChoices = [
+        ["red", "green", "blue", "#ecb"],
+        ["#0ff", "#f0f", "#ff0", "#ecb"],
+        ["cyan", "magenta", "yellow", "#ecb"],
+        ["blue", "indigo", "violet", "#ecb"],
+        ["violet", "white", "pink", "purple"],
+        ["brown", "orange", "goldenrod", "#ecb"]
+    ];
+</script>
+
+<h2>Cribbage Board</h2>
+
+<div class="row text-center" id="crib-board-row">
+</div>
+
+<div id="optionsControl" href="#" data-toggle="collapse" data-target="#options">
+    <span id="optionsOpen" class="glyphicon glyphicon-chevron-right"></span>
+    <span id="optionsClose" style="display:none" class="glyphicon glyphicon-chevron-down"></span>
+    Options
+</div>
+<div id="options" class="collapse">
+    <button type="button" class="btn btn-primary" onclick="resetBoard()">Reset board</button>
+    <div style="float:right;margin-right:30px;">
+        <script>
+            for (var i = 0; i < colorChoices.length; i++) {
+                document.write('<label class="radio-inline">' +
+                    '<input type="radio" name="colorpick" onclick="setColors(' + i + ')" />' +
+                    '<span style="border: 2px solid ' + colorChoices[i][0] + '">' + colorChoices[i][0] + '</span> ' +
+                    '<span style="border: 2px solid ' + colorChoices[i][1] + '">' + colorChoices[i][1] + '</span> ' +
+                    '<span style="border: 2px solid ' + colorChoices[i][2] + '">' + colorChoices[i][2] + '</span> ' +
+                    '</label>');
+            }
+        </script>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        var WIDTH = $("#crib-board-row").width();
+        var RATIO = WIDTH / 600.0;
+        var HEIGHT = RATIO * 180;
+        var holeRadius = RATIO * 2.5;
+        var $pegs, $rects, colors;
+        var moves = [];
+
+        function getPegHole(id, x, y) {
+            var rectW = RATIO * 9;
+            var rectH = RATIO * 13;
+            var rectX = x - (rectW / 2);
+            var rectY = y - (rectH / 2);
+            id = id.replace('#', '');
+
+            var html =
+                '<circle id="' + id + '" cx="' + x + '" cy="' + y + '" r="' + holeRadius + '" fill="black" />' +
+                '<rect class="touch" id="t' + id + '" x="' + rectX + '" y="' + rectY + '" width="' + rectW +
+                '" height="' + rectH + '"' + 'style="fill:transparent;stroke:transparent;stroke-width:1" />';
+
+            return html;
+        }
+
+        function getRectPegHoles(x, y, row, col, fill) {
+            x += RATIO * 6;
+            y += RATIO * 7.5;
+            var xDist = RATIO * 9.5;
+            var html = '';
+
+            var positivity = (row == 2) ? -1 : 1;
+            var baseScore = (row == 0) ? 1 : (row == 1) ? 86 : 80;
+            baseScore += 5 * col * positivity;
+
+            for (var i = 0; i < 5; i++) {
+                var score = baseScore + (i * positivity);
+                cx = x + (i * xDist);
+                var id = fill + score; // red49
+                html += getPegHole(id, cx, y);
+            }
+
+            return html;
+        }
+
+        function getRectsHtml() {
+            var x = RATIO * 140;
+            var y = RATIO * 7.5;
+            var w = RATIO * 50;
+            var h = RATIO * 15;
+            var html = "";
+
+            for (var col = 0; col < 7; col++) {
+                var xx = x + (col * w);
+
+                for (var row = 0; row < 3; row++) {
+                    var yy = y + (row * h * 4);
+                    var fill = (row < 2) ? [colors[0], colors[1], colors[2]] : [colors[2], colors[1], colors[0]];
+
+                    for (var i = 0; i < 3; i++) {
+                        yyy = yy + (i * h);
+
+                        html += '<rect x="' + xx + '" y="' + yyy + '" width="' + w + '" height="' + h + '"' +
+                            'style="fill:' + fill[i] + ';stroke:black;stroke-width:1" />' +
+                            getRectPegHoles(xx, yyy, row, col, fill[i]);
+                    }
+                }
+            }
+
+            return html;
+        }
+
+        function getSemicircle(x, y, radius, dx, dy, color) {
+            var html =
+                '<path d="M' + x + ' ' + y +
+                ' h ' + dx +
+                ' a ' + radius + ' ' + radius + ' 0 0 1 0 ' + dy +
+                ' h ' + (-dx) + ' Z' +
+                ' stroke="black" fill="' + color + '" stroke-width="1" />';
+
+            return html;
+        }
+
+        function getBigArcHtml() {
+            var x = RATIO * 490;
+            var y;
+            var html = '';
+
+            for (var i = 0; i < 4; i++) {
+                y = (RATIO * (7.5 + (i * 15))) - 0.5;
+                var radius = (RATIO * (82.5 - (i * 15))) + 0.5;
+                var dy = radius * 2;
+
+                html += getSemicircle(x, y, radius, RATIO * 10, dy, "black");
+                html += getSemicircle(x, y + 1, radius - 1, RATIO * 10, dy - 2, colors[i]);
+            }
+
+            var lineY = HEIGHT / 2;
+            html += '<line x1="' + (RATIO * 538) + '" y1="' + lineY + '" x2="' + (RATIO * 583) + '" y2="' + lineY + '"' +
+                'stroke-width="1" stroke="black"/>';
+
+            lineY = y + 1;
+            html += '<line x1="' + x + '" y1="' + lineY + '" x2="' + x + '" y2="' + (lineY + (RATIO * 15)) + '"' +
+                'stroke-width="3" stroke="' + colors[3] + '"/>';
+
+            lineY += (RATIO * 59.5);
+            html += '<line x1="' + x + '" y1="' + lineY + '" x2="' + x + '" y2="' + (lineY + (RATIO * 15)) + '"' +
+                'stroke-width="3" stroke="' + colors[3] + '"/>';
+
+            return html;
+        }
+
+        function getSmallArcHtml() {
+            var x = RATIO * 140;
+            var y;
+            var html = '';
+
+            for (var i = 0; i < 4; i++) {
+                var y = (RATIO * (172.5 - (i * 15))) + 0.5;
+                var radius = (RATIO * (52.5 - (i * 15))) + 0.5;
+                var dy = -radius * 2;
+
+                html += getSemicircle(x, y, radius, -20, dy, "black");
+                html += getSemicircle(x, y - 1, radius - 1, -20, dy + 2, colors[i]);
+            }
+
+            var lineY = y - 1;
+            html += '<line x1="' + x + '" y1="' + lineY + '" x2="' + x + '" y2="' + (lineY - (RATIO * 14.5)) + '"' +
+                'stroke-width="3" stroke="' + colors[3] + '"/>';
+
+            return html;
+        }
+
+        function getArcHole(id, x, y, radiusFactor, radians) {
+            x += (RATIO * radiusFactor * 15 * Math.sin(radians));
+            y -= (RATIO * radiusFactor * 15 * Math.cos(radians));
+            return getPegHole(id, x, y);
+        }
+
+        function getArcHolesHtml() {
+            var html = '';
+            var diagFactor = RATIO * 7.5 * Math.sqrt(2.0);
+
+            for (var i = 0; i < 3; i++) {
+                var color = colors[2 - i];
+
+                var rFact = i + 3;
+                var x = RATIO * 496;
+                var y = HEIGHT / 2;
+                html += getArcHole(color + "36", x, y, rFact, 1 * Math.PI / 64);
+                html += getArcHole(color + "45", x, y, rFact, 63 * Math.PI / 64);
+
+                x += RATIO * 2;
+                html += getArcHole(color + "37", x, y, rFact, 7 * Math.PI / 64);
+                html += getArcHole(color + "38", x, y, rFact, 14 * Math.PI / 64);
+                html += getArcHole(color + "39", x, y, rFact, 21 * Math.PI / 64);
+                html += getArcHole(color + "40", x, y, rFact, 28 * Math.PI / 64);
+                html += getArcHole(color + "41", x, y, rFact, 36 * Math.PI / 64);
+                html += getArcHole(color + "42", x, y, rFact, 43 * Math.PI / 64);
+                html += getArcHole(color + "43", x, y, rFact, 50 * Math.PI / 64);
+                html += getArcHole(color + "44", x, y, rFact, 57 * Math.PI / 64);
+
+                rFact = i + 1;
+                x = RATIO * 132.5;
+                y = RATIO * 120;
+                html += getArcHole(color + "81", x, y, rFact, Math.PI);
+                html += getArcHole(color + "85", x, y, rFact, 0);
+
+                x -= RATIO * 3;
+                html += getArcHole(color + "82", x, y, rFact, 5 * Math.PI / 4);
+                html += getArcHole(color + "83", x, y, rFact, 3 * Math.PI / 2);
+                html += getArcHole(color + "84", x, y, rFact, 7 * Math.PI / 4);
+            }
+
+            return html;
+        }
+
+        function getScoreLine(score, x, y) {
+            var h = RATIO * 10;
+            var w = 0;
+
+            if ((score >= 5 && score <= 35) || (score >= 85)) {
+                x += RATIO * 2;
+                if (score == 5) {
+                    y -= RATIO * 2.5;
+                    h -= RATIO * 1.5;
+                } else if (score >= 100) {
+                    y -= RATIO * 1;
+                    h += RATIO * 2;
+                } else {
+                    y -= RATIO * 1.5;
+                }
+            } else if (score >= 45 && score <= 80) {
+                x -= RATIO * 2;
+                y -= RATIO * 8.5;
+            } else if (score == 40) {
+                x -= RATIO * 8.5;
+                y += RATIO * 2;
+                h = 0;
+                w = RATIO * 10;
+            }
+
+            return '<line x1="' + x + '" y1="' + y +
+                '" x2="' + (x + w) + '" y2="' + (y + h) +
+                '" style="stroke:' + colors[1] + ';stroke-width:2" />';
+            //'" style="stroke:#ff00ff;stroke-width:2" />';
+        }
+
+        function addScore(score, x, y, degrees) {
+            if (score == 0) {
+                return '';
+            }
+
+            var html = '';
+
+            if (score == 90) {
+                html += getScoreLine(score, x, y - (RATIO * 0.5));
+                html += getScoreLine(score, x, y + (RATIO * 3.5));
+                x += RATIO * 2;
+                y -= RATIO * 2.5;
+                var ctrlX = RATIO * 3;
+                var ctrlY = RATIO * 3.75;
+                var qy = ctrlY * 2;
+                var curveHtml =
+                    '<path d="M ' + x + ' ' + y +
+                    ' q ' + (-ctrlX) + ' ' + ctrlY + ' 0 ' + qy +
+                    ' q ' + ctrlX + ' ' + ctrlY + ' 0 ' + qy + '" ' +
+                    'stroke="black" stroke-width="2" fill="none" />';
+                html += curveHtml;
+            } else {
+                if (score == 5 || score == 85 || score == 95) {
+                    y += RATIO * 1.5;
+                }
+
+                var fontSize = RATIO * 6;
+                html += getScoreLine(score, x, y) +
+                    '<text x="' + x + '" y="' + y + '" fill="black" ' +
+                    'transform="rotate(' + degrees + ' ' + x + ',' + y + ')' +
+                    '" style="font-size:' + fontSize + 'px" font-weight="bold">' + score + '</text>';
+            }
+
+            return html;
+        }
+
+        function getScoresHtml() {
+            var html = '';
+            var score;
+            var y = RATIO * 26.5;
+            var x = RATIO * 138;
+
+            for (var i = 0; i < 8; i++) {
+                html += addScore(i * 5, x + (i * RATIO * 50), y, 90);
+                html += addScore((i + 9) * 5, x + (RATIO * 4) + ((7 - i) * RATIO * 50), y + (RATIO * 127), -90);
+                html += addScore((i + 17) * 5, x + (i * RATIO * 50), y + (RATIO * 58.5), 90);
+            }
+
+            html += addScore(40, RATIO * 563, RATIO * 88, 180);
+
+            return html;
+        }
+
+        function getCounterHtml() {
+            var x = RATIO * 15;
+            var y = RATIO * 7.5;
+            var w = RATIO * 15;
+            var h = RATIO * (165 / 7);
+            var html = '';
+
+            for (var col = 0; col < 3; col++) {
+                var xx = x + (col * w);
+                var cx = xx + (RATIO * 7.5);
+
+                for (var row = 0; row < 7; row++) {
+                    var yy = y + (row * h);
+                    var cy = yy + (RATIO * (165 / 14));
+                    var id = colors[col] + "Wins" + (row + 1); // redWins7;
+
+                    html += '<rect x="' + xx + '" y="' + yy + '" width="' + w + '" height="' + h + '"' +
+                        'style="fill:' + colors[col] + ';stroke:black;stroke-width:1" />' +
+                        getPegHole(id, cx, cy);
+                }
+            }
+
+            return html;
+        }
+
+        function getFinishTextHtml() {
+            var textX = RATIO * 508;
+            var textY = HEIGHT / 2;
+            var rotateX = textX + (RATIO * 12.5);
+            var rotateY = textY + (RATIO * 2);
+            var fontSize = (RATIO * 7);
+
+            var html =
+                '<text x="' + textX + '" y="' + textY + '" fill="black" ' +
+                'transform="rotate(90 ' + rotateX + ',' + rotateY + ')' +
+                '" style="font-size:' + fontSize + 'px">FINISH</text>';
+
+            return html;
+        }
+
+        function getFinishHtml() {
+            var rectX = RATIO * 495;
+            var dx = RATIO * 7.5;
+            var triangleX = rectX + dx;
+            var triangleDX = (RATIO * 4 * Math.sqrt(2.0));
+            var pegX = rectX + (RATIO * 20);
+            var y = HEIGHT / 2;
+            var rectY = y - (RATIO * 1.5);
+            var dy = RATIO * 3;
+            var triangleDY = RATIO * 4;
+            var triangleY = y - triangleDY;
+
+            var html =
+                '<rect x="' + rectX + '" y="' + rectY + '" width="' + dx + '" height="' + dy + '"' +
+                'style="fill:black;stroke:transparent;stroke-width:0" />' +
+                '<path d="M' + triangleX + ' ' + triangleY +
+                ' l ' + triangleDX + ' ' + triangleDY +
+                ' l ' + (-triangleDX) + ' ' + triangleDY +
+                ' Z ' +
+                ' stroke="black" fill="black" stroke-width="1" />' +
+                getPegHole("finish", pegX, y) +
+                getFinishTextHtml();
+
+            return html;
+        }
+
+        function getStartTextHtml() {
+            var textX = RATIO * 110;
+            var textY = RATIO * 24;
+            var rotateX = textX + (RATIO * 12.5);
+            var rotateY = textY + (RATIO * 6.5);
+            var fontSize = (RATIO * 7);
+
+            var html =
+                '<text x="' + textX + '" y="' + textY + '" fill="black" ' +
+                'transform="rotate(90 ' + rotateX + ',' + rotateY + ')' +
+                '" style="font-size:' + fontSize + 'px">START</text>';
+
+            return html;
+        }
+
+        // stolen from the Internet: stackoverflow #1573053
+        function colourNameToHex(colour) {
+            var colours = {
+                "aliceblue": "#f0f8ff", "antiquewhite": "#faebd7", "aqua": "#00ffff", "aquamarine": "#7fffd4", "azure": "#f0ffff",
+                "beige": "#f5f5dc", "bisque": "#ffe4c4", "black": "#000000", "blanchedalmond": "#ffebcd", "blue": "#0000ff", "blueviolet": "#8a2be2", "brown": "#a52a2a", "burlywood": "#deb887",
+                "cadetblue": "#5f9ea0", "chartreuse": "#7fff00", "chocolate": "#d2691e", "coral": "#ff7f50", "cornflowerblue": "#6495ed", "cornsilk": "#fff8dc", "crimson": "#dc143c", "cyan": "#00ffff",
+                "darkblue": "#00008b", "darkcyan": "#008b8b", "darkgoldenrod": "#b8860b", "darkgray": "#a9a9a9", "darkgreen": "#006400", "darkkhaki": "#bdb76b", "darkmagenta": "#8b008b", "darkolivegreen": "#556b2f",
+                "darkorange": "#ff8c00", "darkorchid": "#9932cc", "darkred": "#8b0000", "darksalmon": "#e9967a", "darkseagreen": "#8fbc8f", "darkslateblue": "#483d8b", "darkslategray": "#2f4f4f", "darkturquoise": "#00ced1",
+                "darkviolet": "#9400d3", "deeppink": "#ff1493", "deepskyblue": "#00bfff", "dimgray": "#696969", "dodgerblue": "#1e90ff",
+                "firebrick": "#b22222", "floralwhite": "#fffaf0", "forestgreen": "#228b22", "fuchsia": "#ff00ff",
+                "gainsboro": "#dcdcdc", "ghostwhite": "#f8f8ff", "gold": "#ffd700", "goldenrod": "#daa520", "gray": "#808080", "green": "#008000", "greenyellow": "#adff2f",
+                "honeydew": "#f0fff0", "hotpink": "#ff69b4",
+                "indianred ": "#cd5c5c", "indigo": "#4b0082", "ivory": "#fffff0", "khaki": "#f0e68c",
+                "lavender": "#e6e6fa", "lavenderblush": "#fff0f5", "lawngreen": "#7cfc00", "lemonchiffon": "#fffacd", "lightblue": "#add8e6", "lightcoral": "#f08080", "lightcyan": "#e0ffff", "lightgoldenrodyellow": "#fafad2",
+                "lightgrey": "#d3d3d3", "lightgreen": "#90ee90", "lightpink": "#ffb6c1", "lightsalmon": "#ffa07a", "lightseagreen": "#20b2aa", "lightskyblue": "#87cefa", "lightslategray": "#778899", "lightsteelblue": "#b0c4de",
+                "lightyellow": "#ffffe0", "lime": "#00ff00", "limegreen": "#32cd32", "linen": "#faf0e6",
+                "magenta": "#ff00ff", "maroon": "#800000", "mediumaquamarine": "#66cdaa", "mediumblue": "#0000cd", "mediumorchid": "#ba55d3", "mediumpurple": "#9370d8", "mediumseagreen": "#3cb371", "mediumslateblue": "#7b68ee",
+                "mediumspringgreen": "#00fa9a", "mediumturquoise": "#48d1cc", "mediumvioletred": "#c71585", "midnightblue": "#191970", "mintcream": "#f5fffa", "mistyrose": "#ffe4e1", "moccasin": "#ffe4b5",
+                "navajowhite": "#ffdead", "navy": "#000080",
+                "oldlace": "#fdf5e6", "olive": "#808000", "olivedrab": "#6b8e23", "orange": "#ffa500", "orangered": "#ff4500", "orchid": "#da70d6",
+                "palegoldenrod": "#eee8aa", "palegreen": "#98fb98", "paleturquoise": "#afeeee", "palevioletred": "#d87093", "papayawhip": "#ffefd5", "peachpuff": "#ffdab9", "peru": "#cd853f", "pink": "#ffc0cb", "plum": "#dda0dd", "powderblue": "#b0e0e6", "purple": "#800080",
+                "rebeccapurple": "#663399", "red": "#ff0000", "rosybrown": "#bc8f8f", "royalblue": "#4169e1",
+                "saddlebrown": "#8b4513", "salmon": "#fa8072", "sandybrown": "#f4a460", "seagreen": "#2e8b57", "seashell": "#fff5ee", "sienna": "#a0522d", "silver": "#c0c0c0", "skyblue": "#87ceeb", "slateblue": "#6a5acd", "slategray": "#708090", "snow": "#fffafa", "springgreen": "#00ff7f", "steelblue": "#4682b4",
+                "tan": "#d2b48c", "teal": "#008080", "thistle": "#d8bfd8", "tomato": "#ff6347", "turquoise": "#40e0d0",
+                "violet": "#ee82ee",
+                "wheat": "#f5deb3", "white": "#ffffff", "whitesmoke": "#f5f5f5",
+                "yellow": "#ffff00", "yellowgreen": "#9acd32"
+            };
+
+            if (typeof colours[colour.toLowerCase()] != 'undefined')
+                return colours[colour.toLowerCase()];
+
+            return false;
+        }
+
+        // stolen from the Internet: stackoverflow #5623838
+        function hexToRgb(hex) {
+            // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+            var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            var hex2 = hex.replace(shorthandRegex, function (m, r, g, b) {
+                return r + r + g + g + b + b;
+            });
+
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex2);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function parseRgb(color) {
+            var arr = color.substr(4, color.length - 2).split(',');
+            return (arr.length > 2) ? { r: arr[0], g: arr[1], b: arr[2] } : { r: 0, g: 0, b: 0 };
+        }
+
+        function newRgb(num) {
+            return parseInt(num + ((255 - num) / 2));
+        }
+
+        function getPegColor(color) {
+            var testText = colourNameToHex(color);
+            var testHex = color.charAt(0) == '#';
+            var rgb = (testText) ? hexToRgb(testText) : (testHex) ? hexToRgb(color) : parseRgb(color);
+
+            //return "rgb(" + [parseInt(rgb.r / 2), parseInt(rgb.g / 2), parseInt(rgb.b / 2)].join(',') + ")";
+            return "rgb(" + [newRgb(rgb.r), newRgb(rgb.g), newRgb(rgb.b)].join(',') + ")";
+        }
+
+        function getStartHtml() {
+            var x = RATIO * 80;
+            var y = RATIO * 7.5;
+            var w = RATIO * 15;
+            var h = RATIO * 15;
+            var pegRadius = RATIO * 3.5;
+            var html = '';
+
+            for (var i = 0; i < 2; i++) {
+                for (var col = 0; col < 3; col++) {
+                    var xx = x + (col * w);
+                    var cx = xx + (RATIO * 7.5);
+
+                    for (var row = 0; row < 3; row++) {
+                        var yy = y + (row * h);
+                        var cy = yy + (RATIO * 7.5);
+                        var id = colors[row] + "Start" + (col + 1); // redStart3;
+                        id = id.replace('#', '');
+
+                        if (i == 0) {
+                            html += '<rect x="' + xx + '" y="' + yy + '" width="' + w + '" height="' + h + '"' +
+                                'style="fill:' + colors[row] + ';stroke:black;stroke-width:1" />' +
+                                getPegHole(id, cx, cy);
+                        } else {
+                            html += '<circle class="peg" id="' + id.replace("Start", "Peg") + '"' + 'cx="' + cx + '" cy="' + cy + '" r="' + pegRadius +
+                                '" fill="' + getPegColor(colors[row]) + '" stroke="black" stroke-width="2" />';
+                        }
+                    }
+                }
+            }
+
+            html += getStartTextHtml();
+
+            return html;
+        }
+
+        function getBoardHtml() {
+            var html =
+                '<div id="crib-board-div">' +
+                '<svg width="' + WIDTH + '" height="' + HEIGHT + '" id="crib-board">' +
+                '<rect width="' + WIDTH + '" height="' + HEIGHT + '" style="fill:' + colors[3] + ';stroke-width:2;stroke:#000" />' +
+                getBigArcHtml() +
+                getSmallArcHtml() +
+                getArcHolesHtml() +
+                getRectsHtml() +
+                getScoresHtml() +
+                getCounterHtml() +
+                getFinishHtml() +
+                getStartHtml() +
+                '</svg>' +
+                '</div>';
+            return html;
+        }
+
+        function drawBoard() {
+            $("#crib-board-row").html(getBoardHtml());
+        }
+
+        function setupPegs() {
+            $pegs = $(".peg");
+
+            $pegs.on("click", function () {
+                if ($(this).hasClass("live")) {
+                    $(this).removeClass("live");
+                    $(this).attr("stroke", "black");
+                } else {
+                    $pegs.removeClass("live");
+                    $pegs.attr("stroke", "black");
+                    $(this).addClass("live");
+                    $(this).attr("stroke", "white");
+                }
+            });
+        }
+
+        function setupRects() {
+            $rects = $(".touch");
+
+            $rects.on("click", function () {
+                var $peg = $(".peg.live");
+
+                if ($peg.length < 1) // if no peg, or if is off-color and not finish, return
+                    return;
+
+                // else, do everything, check for winner -> offer new-game; prohibit illegal moves(?);
+                //     KEEP TRACK OF ALL THE MOVES!
+                var $hole = $("#" + $(this).attr("id").substring(1));
+                var x = $hole.attr("cx");
+                var y = $hole.attr("cy");
+                var pegId = $peg.attr("id");
+                $peg.attr("cx", x);
+                $peg.attr("cy", y);
+                moves[moves.length] = { peg: pegId, x: x, y: y };
+                $peg.removeClass("live");
+                $peg.attr("stroke", "black"); // and make its white fade to black over like 500ms?
+            });
+        }
+
+        function setupOptions() {
+            $("#optionsControl").click(function () {
+                $("#optionsOpen, #optionsClose").toggle();
+            });
+        }
+
+        function setupEvents() {
+            setupPegs();
+            setupRects();
+            setupOptions();
+        }
+
+        function setColors(key) {
+            colors = colorChoices[key];
+            drawBoard();
+            setupEvents();
+        }
+
+        $(function () {
+            colors = colorChoices[0];
+            drawBoard();
+            setupEvents();
+        });
+
+        function resetBoard() {
+            $pegs.each(function () {
+                var $hole = $("#" + $(this).attr("id").replace("Peg", "Start"));
+                $(this).attr("cx", $hole.attr("cx"));
+                $(this).attr("cy", $hole.attr("cy"));
+            });
+        }
+
+    </script>
+}
+

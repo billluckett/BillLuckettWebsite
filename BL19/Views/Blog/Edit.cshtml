@@ -1,0 +1,68 @@
+﻿@model EntryViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    ViewData["MenuOn"] = "Blog";
+    Layout = "_Layout_Blog";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form id="entryForm" asp-action="Edit">
+    <div class="form-horizontal">
+        <h4>Entry</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Entry.Id" />
+        <input type="hidden" asp-for="Entry.CreatedOn" />
+        <div class="form-group">
+            <label asp-for="Entry.Title" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Entry.Title" class="form-control" />
+                <span asp-validation-for="Entry.Title" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Entry.Content" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Entry.Content" class="form-control textarea50">
+                </textarea>
+                <span asp-validation-for="Entry.Content" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="col-md-offset-2 col-md-10" style="margin-bottom:15px;">
+            <h4>Categories for this entry</h4>
+            <div>
+                @Html.EditorFor(model => model.Categories)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-success" />
+                <a class="btn btn-danger" style="margin-left:15px;" asp-action="Admin">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    @foreach (var ac in Model.ActiveCategoryIds)
+    {
+        <script>
+        $("#box_" + "@ac").prop("checked", true);
+        </script>
+    }
+
+    <script>
+        $("#entryForm").submit(function () {
+            $(".catBox").each(function () {
+                if (!($(this).is(':checked'))) {
+                    $("#" + $(this).attr("name").replace("box", "cat")).val(0);
+                }
+            });
+        });
+    </script>
+}

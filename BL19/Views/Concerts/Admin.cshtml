@@ -1,0 +1,16 @@
+﻿@model Dictionary<string, List<object>>
+@{ 
+    ViewData["Title"] = "Admin";
+    Layout = "_Layout_Concerts";
+}
+
+@foreach (var list in Model)
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Here is the @list.Key table</h3>
+            <partial name="_TablePartial" model="list.Value" />
+        </div>
+    </div>
+
+}

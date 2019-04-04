@@ -1,0 +1,187 @@
+﻿@{
+    ViewData["Title"] = "Dice";
+    ViewData["MenuOn"] = "Projects";
+    Layout = "_Layout_NoContainer";
+}
+
+<style>
+    .die {
+        background: lightblue;
+        display: inline-block;
+    }
+
+    .diceDiv {
+        margin: 20px 0px;
+    }
+
+    label {
+        margin-left: 20px;
+        margin-right: 10px;
+    }
+
+    .ans {
+        font-weight: bold;
+        font-size: 125%;
+        color: blue;
+    }
+</style>
+
+<div class="text-center">
+    <div id="params" style="margin-top: 20px;">
+        <div style="display:inline-block;">How many dice do you want to roll?</div>
+        <div style="display:inline-block;">
+            <label class="radio-inline"><input type="radio" name="numDice" value="1">1</label>
+            <label class="radio-inline"><input type="radio" name="numDice" value="2">2</label>
+            <label class="radio-inline"><input type="radio" name="numDice" value="3">3</label>
+            <label class="radio-inline"><input type="radio" name="numDice" value="4">4</label>
+            <label class="radio-inline"><input type="radio" name="numDice" value="5">5</label>
+        </div>
+    </div>
+
+    <div id="diceDiv" class="diceDiv">
+    </div>
+
+    <div style="width:100%;padding:10px;">
+        <button class="btn btn-default" type="button" onclick="runIt();">Roll</button>
+    </div>
+
+    <p style="width:100%;padding:10px;">
+        (You can also press spacebar to roll.)
+    </p>
+
+    <p id="answerDiv" style="width:100%;min-height:40px;">
+    </p>
+
+    <div id="feedback">
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        var screenWidth = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        var SIZE = Math.min(300.0, screenWidth - 30.0);
+        var numDice;
+        var count = 0;
+        var intVar;
+
+        function getDieHtml(idx, num) {
+            var size = SIZE / num;
+            var s10 = size * 0.1;
+            var s20 = size * 0.2;
+            var s50 = size * 0.5;
+            var s80 = size * 0.8;
+
+            var html =
+                '<div class="die">' +
+                '<svg class="n' + idx + '" width="' + size + '" height="' + size + '">' +
+                '<circle class="d1 d3 d5" cx="' + s50 + '" cy="' + s50 + '" r="' + s10 + '" fill="black" />' +
+                '<circle class="d2 d3 d4 d5 d6" cx="' + s20 + '" cy="' + s80 + '" r="' + s10 + '" fill="black" />' +
+                '<circle class="d2 d3 d4 d5 d6" cx="' + s80 + '" cy="' + s20 + '" r="' + s10 + '" fill="black" />' +
+                '<circle class="d4 d5 d6" cx="' + s20 + '" cy="' + s20 + '" r="' + s10 + '" fill="black" />' +
+                '<circle class="d4 d5 d6" cx="' + s80 + '" cy="' + s80 + '" r="' + s10 + '" fill="black" />' +
+                '<circle class="d6" cx="' + s20 + '" cy="' + s50 + '" r="' + s10 + '" fill="black" />' +
+                '<circle class="d6" cx="' + s80 + '" cy="' + s50 + '" r="' + s10 + '" fill="black" />' +
+                '</svg>' +
+                '</div>';
+
+            return html;
+        }
+
+        function styleDice(num) {
+            var size = SIZE / num;
+            var border = (1 + (1.0 / num));
+            var w = size + border;
+            var sh = size / 60.0;
+
+            $(".die").css({
+                "width": w + "px",
+                "height": w + "px",
+                "border": border + "px solid black",
+                "border-radius": (size / 30.0) + "px",
+                "margin": "0px " + (size / 20.0) + "px",
+                "box-shadow": sh + "px " + sh + "px " + sh + "px " + (sh / 5) + "px #888"
+            });
+        }
+
+        function showNum(idx, num) {
+            $(".n" + idx + " > circle").hide();
+            $(".n" + idx + " > .d" + num).show();
+        }
+
+        function makeDice(num) {
+            $("#diceDiv").hide();
+            var diceHtml = "";
+            for (var i = 0; i < num; i++) {
+                diceHtml += getDieHtml(i, num);
+            }
+
+            $("#diceDiv").html(diceHtml);
+            styleDice(num);
+            $("#diceDiv").show();
+            localStorage.setItem("bl_numDice", num);
+
+            for (var i = 0; i < num; i++) {
+                showNum(i, parseInt(Math.random() * 6) + 1);
+            }
+        }
+
+        function roll(times, ms, func) {
+            var i = 0;
+            $("#answerDiv").text("");
+            clearInterval(intVar);
+            intVar = setInterval(function () {
+                if (++count > 40) {
+                    clearInterval(intVar);
+                    count = 0;
+                    $("#answerDiv").html('You rolled: ');
+
+                    var total = 0;
+                    for (var i = 0; i < numDice; i++) {
+                        var ans = parseInt(Math.random() * 6) + 1;
+                        total += ans;
+                        showNum(i, ans);
+                        $("#answerDiv").append('<span class="ans">' + ans + '</span> ');
+                    }
+
+                    $("#answerDiv").append('&nbsp;&nbsp;&nbsp;Total: <span class="ans">' + total + '</span> ');
+
+                } else {
+                    for (var i = 0; i < numDice; i++) {
+                        showNum(i, parseInt(Math.random() * 6) + 1);
+                    }
+
+                    //$("#feedback").text("times: " + times + ", ms: " + ms + ", count: " + count);
+                    if (i++ > times) {
+                        clearInterval(intVar);
+                        func.call(this, times / 2, ms * 2, func);
+                    }
+                }
+            }, ms);
+        }
+
+        function runIt() {
+            count = 0;
+            roll(20, 10, roll);
+        }
+
+        $(function () {
+            numDice = localStorage.getItem("bl_numDice") || 1;
+            $('input[name=numDice]').eq(numDice - 1).prop('checked', true);
+            makeDice(numDice);
+        });
+
+        $("#params input").change(function () {
+            numDice = $('input[name=numDice]:checked').val();
+            makeDice(numDice);
+            $("#answerDiv").html('');
+        });
+
+        $(window).keypress(function (e) {
+            if (e.which === 32) {
+                runIt();
+            }
+        });
+    </script>
+}
+

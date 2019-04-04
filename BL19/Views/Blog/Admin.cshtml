@@ -1,0 +1,87 @@
+@model IEnumerable<Entry>
+
+@{
+    ViewData["Title"] = "Admin";
+    Layout = "_Layout_Blog";
+}
+
+<h2>Admin</h2>
+<h4>
+    <a asp-action="AdminTables">Go to other tables</a>
+</h4>
+
+<p>
+    <a class="btn btn-default" asp-action="Create">+ Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Content
+            </th>
+            <th>
+                Created
+            </th>
+            <th>
+                Modified
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+    TimeZoneInfo pstZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+    var createdPst = TimeZoneInfo.ConvertTimeFromUtc(item.CreatedOn, pstZone);
+    var createdZone = pstZone.IsDaylightSavingTime(createdPst) ? "PDT" : "PST";
+    var modifiedPst = TimeZoneInfo.ConvertTimeFromUtc(item.ModifiedOn, pstZone);
+    var modifiedZone = pstZone.IsDaylightSavingTime(modifiedPst) ? "PDT" : "PST";
+
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                <p>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </p>
+                <div>
+                    <b>Categories: </b>
+
+                    @if (item.EntryCategories != null)
+                    {
+                        var cats = item.EntryCategories.OrderBy(o => o.CategoryId).Select(s => s.Category.Name);
+                        <span>@string.Join(", ", cats)</span>
+                    }
+                </div>
+            </td>
+            <td>
+                @createdPst.ToString("d")
+                <br />
+                @createdPst.ToString("t") @createdZone
+            </td>
+            <td>
+                @modifiedPst.ToString("d")
+                <br />
+                @modifiedPst.ToString("t") @modifiedZone
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                <br />
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                <br />
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

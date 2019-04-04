@@ -1,0 +1,79 @@
+﻿@model ManageBlogViewModel
+
+@{
+    ViewData["Title"] = "AdminTables";
+    ViewData["MenuOn"] = "Admin";
+    Layout = "_Layout_Blog";
+}
+
+<h2>@ViewData["Title"]</h2>
+<h4>
+    <a asp-action="Admin">Go to Entries List</a>
+</h4>
+
+<div class="col-sm-7">
+    <h3>Categories</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Color
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Categories)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td style="padding:20px 10px;">
+                        <span style="padding:5px;border:10px solid @item.Color">
+                            @Html.DisplayFor(modelItem => item.Color)
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="col-sm-5">
+    <h3>Tags</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Name
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Tags)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

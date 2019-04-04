@@ -1,0 +1,27 @@
+﻿<h4>The latest from some of my favorite sites</h4>
+
+<hr />
+
+<div id="rssSpace">
+    <h5><a href="https://www.space.com" target="_blank">Space.com</a></h5>
+    <script src="//rss.bloople.net/?url=https%3A%2F%2Fwww.space.com%2Fhome%2Ffeed%2Fsite.xml&detail=-1&limit=10&showtitle=false&type=js"></script>
+    <div class="rssContent"></div>
+</div>
+
+<hr />
+
+<div id="rssScience">
+    <h5><a href="http://science.sciencemag.org/" target="_blank">Science Magazine</a></h5>
+    <script src="//rss.bloople.net/?url=https%3A%2F%2Fwww.sciencemag.org%2Frss%2Fnews_current.xml&detail=-1&limit=10&showtitle=false&type=js"></script>
+    <div class="rssContent"></div>
+</div>
+
+@*<script>
+    var spaceRssUrl = "https://www.space.com/home/feed/site.xml";
+    var siteRssUrl = "http://www.sciencemag.org/rss/news_current.xml";
+
+    $(function () {
+        getRssFeed(spaceRssUrl, $("#rssSpace .rssContent"));
+        getRssFeed(siteRssUrl, $("#rssScience .rssContent"));
+    });
+</script>*@

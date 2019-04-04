@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var appUser = UserManager.GetUserAsync(User).Result;
+    var roles = (appUser == null) ? new List<string>() : UserManager.GetRolesAsync(appUser).Result.ToList();
+
+    var siteTitle = "Bill's Blog";
+    ViewData["SiteTitle"] = siteTitle;
+    var hasPageTitle = ViewData.ContainsKey("Title");
+    var pageTitle = hasPageTitle ? (string)ViewData["Title"] : "";
+    var browserTitle = hasPageTitle ? pageTitle + " - " + siteTitle : siteTitle;
+    var menuOn = ViewData.ContainsKey("MenuOn") ? (string)ViewData["MenuOn"] : pageTitle;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@browserTitle</title>
+
+    <partial name="_FaviconLinksPartial" />
+    <partial name="_LayoutCssPartial" />
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top gradient-navy">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                    <img src="~/images/BL_Logo_WhiteOnClear.svg" alt="BL Home" class="blLogo" />
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li id="li-blog"><a asp-area="" asp-controller="Blog" asp-action="Index">All</a></li>
+                    <li id="li-sports"><a asp-area="" asp-controller="Blog" asp-action="Sports">Sports</a></li>
+                    <li id="li-politics"><a asp-area="" asp-controller="Blog" asp-action="Politics">Politics</a></li>
+                    <li id="li-webdev"><a asp-area="" asp-controller="Blog" asp-action="WebDev">WebDev</a></li>
+                    <li id="li-science"><a asp-area="" asp-controller="Blog" asp-action="Science">Science</a></li>
+                    @*<li id="li-parenthood"><a asp-area="" asp-controller="Blog" asp-action="Parenthood">Parenthood</a></li>*@
+                    @if (roles.Contains("Admin"))
+                    {
+                        <li><a asp-area="" asp-controller="Blog" asp-action="Admin" style="color:#fe0"><b>Blog Admin</b></a></li>
+                    }
+                </ul>
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
+    </nav>
+    <partial name="_CookieConsentPartial" />
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    <partial name="_FooterPartial" />
+    <partial name="_LayoutJsPartial" />
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        var menuOn = ("@menuOn").toLowerCase();
+        $("#li-" + menuOn).css("font-weight", "bold");
+        $("#li-" + menuOn + " > a").css("color", "#91c7ef");
+    </script>
+</body>
+</html>

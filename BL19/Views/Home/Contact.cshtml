@@ -1,0 +1,46 @@
+﻿@model ContactViewModel
+
+@{
+    ViewData["Title"] = "Contact";
+}
+
+<div class="row">
+    <div class="col-sm-4">
+        <div class="row">
+            <div class="col-xs-6 col-sm-12">
+                <h3>Call me</h3>
+                <address class="col-sm-offset-1">307-267-8715</address>
+            </div>
+            <div class="col-xs-6 col-sm-12">
+                <h3>Write me</h3>
+                <address class="col-sm-offset-1">
+                    2629 Larkins Lane<br />
+                    Forest Grove, OR 97116
+                </address>
+            </div>
+            <div class="col-xs-12 col-sm-12">
+                <h3>Find me elsewhere online</h3>
+                <ul>
+                    <li><a href="https://www.linkedin.com/in/billluckett/">LinkedIn</a></li>
+                    <li><a href="https://github.com/billluckett">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <h3>Email me</h3>
+
+        <form asp-area="" asp-controller="Home" asp-action="Contact" method="post">
+            <p>
+                <input asp-for="Email" class="form-control" placeholder="Your email address" style="width:100%;max-width:1000px;" />
+            </p>
+            <p>
+                <textarea asp-for="Comments" class="form-control" placeholder="Comments" style="height:300px;width:100%;max-width:1000px;"></textarea>
+            </p>
+            <div style="text-align:center;">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+        
+    </div>
+</div>

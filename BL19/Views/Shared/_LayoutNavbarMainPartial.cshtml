@@ -1,0 +1,46 @@
+﻿<nav class="navbar navbar-inverse navbar-fixed-top gradient-navy">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                <img src="~/images/BL_Logo_WhiteOnClear.svg" alt="BL Home" class="blLogo" />
+            </a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li id="li-blog"><a asp-area="" asp-controller="Blog" asp-action="Index">Blog</a></li>
+                <li id="li-projects" class="dropdown">
+                    <a asp-area="" asp-controller="Projects" asp-action="Index">Projects<span class="caret"></span></a>
+                    <ul class="dropdown-menu" id="projectsDropdown">
+                        @*<li><a asp-area="" asp-controller="MealPlanner" asp-action="Index">Meals &amp; Shopping Planner</a></li>*@
+                        <li><a asp-area="" asp-controller="Blog" asp-action="Index">Blog</a></li>
+                        @*<li><a asp-area="" asp-controller="LicensePlates" asp-action="Index">License Plates</a></li>*@
+                        <li><a asp-area="" asp-controller="Concerts" asp-action="Index">Concerts</a></li>
+                        <li><a asp-area="" asp-controller="ElectoralMap" asp-action="Index">Electoral Map</a></li>
+                        <li id="li-utilities" class="dropdown">
+                            <a asp-area="" asp-controller="Games" asp-action="Index">Games &amp; Utilities<span class="caret"></span></a>
+                            <ul class="dropdown-menu" id="utilitiesDropdown">
+                                <li><a asp-area="" asp-controller="Dice" asp-action="Index">Dice</a></li>
+                                <li><a asp-area="" asp-controller="Cribbage" asp-action="Index">Cribbage Board</a></li>
+                                <li><a asp-area="" asp-controller="Pong" asp-action="Index">Pong</a></li>
+                                <li><a asp-area="" asp-controller="TicTacToe" asp-action="Index">Tic-Tac-Toe</a></li>
+                                <li><a asp-area="" asp-controller="Scoreboard" asp-action="Index">Scoreboard</a></li>
+                                @*<li><a asp-area="" asp-controller="VideoPlayer" asp-action="Index">Video Player</a></li>*@
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li id="li-github"><a href="https://github.com/billluckett" target="_blank">Code</a></li>
+                <li id="li-resume"><a asp-area="" asp-controller="Home" asp-action="Resume">Resume</a></li>
+                @*<li id="li-about"><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>*@
+                <li id="li-contact"><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+            </ul>
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,38 @@
+﻿@{
+    var siteTitle = "Bill Luckett";
+    var hasPageTitle = ViewData.ContainsKey("Title");
+    var pageTitle = hasPageTitle ? (string)ViewData["Title"] : "";
+    var browserTitle = hasPageTitle ? pageTitle + " - " + siteTitle : siteTitle;
+    var menuOn = ViewData.ContainsKey("MenuOn") ? (string)ViewData["MenuOn"] : pageTitle;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BL19</title>
+
+    <partial name="_FaviconLinksPartial" />
+    <partial name="_LayoutCssPartial" />
+</head>
+<body>
+    <partial name="_LayoutNavbarMainPartial" />
+    <partial name="_CookieConsentPartial" />
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    <partial name="_FooterPartial" />
+    <partial name="_LayoutJsPartial" />
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        var menuOn = ("@menuOn").toLowerCase();
+        $("#li-" + menuOn).css("font-weight", "bold");
+        $("#li-" + menuOn + " > a").css("color", "#91c7ef");
+    </script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+﻿@{
+    ViewData["Title"] = "Resume";
+}
+
+
+<style>
+    #resumeMain {
+        font-size: 14px;
+    }
+
+    section {
+        margin-top: 12px;
+    }
+
+    #headerSection {
+        margin-top: 20px;
+    }
+
+    #myName {
+        font-size: 32px;
+        font-weight: 500;
+        color: mediumblue;
+        text-align: center;
+    }
+
+    #downloadBtn {
+        color: mediumblue;
+    }
+
+    #tagline {
+        margin-top: 10px;
+    }
+
+    .colHead {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .itemDiv {
+        margin-bottom: 5px;
+    }
+
+    ul {
+        margin-bottom: 5px;
+    }
+
+    .subList li {
+        display: inline;
+        margin-right: 15px;
+    }
+
+    .proj-note {
+        color: black;
+        font-size: 16px;
+        font-weight: normal;
+        margin-left: 15px;
+    }
+
+    @@media (min-width: 768px) {
+        #myName {
+            text-align: inherit;
+        }
+    }
+
+    @@media print {
+        body, .container, #resumeMain, #headerSection {
+            margin-top: 0px !important;
+            padding-top: 0px !important;
+        }
+
+        section {
+            margin-top: 8px;
+        }
+
+        #skillsSection ul {
+            padding-inline-start: 25px;
+        }
+
+        .col-sm-4 {
+            width: 33%;
+            float: left;
+        }
+
+        #resumeMain {
+            font-size: 9.5pt;
+            margin: 0px;
+        }
+
+        #myName {
+            font-size: 18.5pt;
+            text-align: left;
+        }
+
+        #downloadBtn {
+            display: none;
+        }
+
+        a[href]:after {
+            content: none !important;
+        }
+
+        hr {
+            border-top: 1px solid #ccc;
+        }
+
+        h5 {
+            font-size: 10.5pt;
+            color: inherit;
+            margin-bottom: 7px;
+        }
+
+        .colHead {
+            font-size: 10pt;
+        }
+
+        .proj-note {
+            font-size: 9.5pt;
+        }
+
+        #siteFooter {
+            display: none;
+        }
+    }
+</style>
+
+
+<div id="resumeMain">
+    <section class="row" id="headerSection">
+        <div class="col-sm-4" id="myName">
+            Bill Luckett
+        </div>
+        <div class="col-sm-4 text-center">
+            <a href="https://www.linkedin.com/in/billluckett" target="_blank">www.linkedin.com/in/billluckett</a><br />
+            <a href="https://github.com/billluckett" target="_blank">github.com/billluckett</a>
+        </div>
+        <div class="col-sm-4 text-center">
+            <div class="row">
+                <div class="col-sm-9">
+                    (307) 267-8715<br />
+                    <a href="mailto:luckett.bill@gmail.com">luckett.bill@gmail.com</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="~/docs/BillLuckettResume.pdf" class="btn btn-default" id="downloadBtn" download>
+                        <span class="glyphicon glyphicon-download-alt"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-sm-12" id="tagline">
+            Full-stack web developer with four+ years experience building ASP.NET web apps. Reliable. Conscientious. Detail-oriented.
+        </div>
+    </section>
+    <hr />
+
+    <section class="row" id="skillsSection">
+        <div class="col-sm-12">
+            <h5 class="sectionTitle">SKILLS</h5>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="colHead">Web Development</div>
+            <ul>
+                <li>ASP.NET Core and MVC 5</li>
+                <li>C# (proficient)</li>
+                <li>JavaScript</li>
+                <li>HTML5/CSS3</li>
+                <li>jQuery (incl. AJAX)</li>
+                <li>Bootstrap</li>
+            </ul>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="colHead">Azure Cloud Services</div>
+            <ul>
+                <li>Azure Functions (C#)</li>
+                <li>Azure Webjobs (C#)</li>
+                <li>Building dev ops deployment pipelines in Azure</li>
+                <li>Azure administration</li>
+            </ul>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="colHead">Other Proficiencies</div>
+            <ul>
+                <li>Microsoft Dynamics 365 (CRM)</li>
+                <li>Microsoft PowerApps</li>
+                <li>Sitefinity CMS</li>
+                <li>Visual Studio</li>
+                <li>SQL Server 2012 & 2016, Azure SQL, SSMS</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-sm-12">
+            <h5 class="sectionTitle">PROFESSIONAL EXPERIENCE</h5>
+        </div>
+
+        <div class="col-sm-12 itemDiv">
+            <div class="colHead">
+                Biamp Systems &ndash; Enterprise Applications Developer (March 2016 - present)
+            </div>
+            <ul>
+                <li>Designed and built C# and web extensions for Microsoft Dynamics 365 Customer Experience (CRM)</li>
+                <li>Developed custom widgets for the customer-facing Sitefinity website using the ASP.NET web stack</li>
+                <li>Wrote ASP.NET Core web apps to sync data between systems, manage HTML redirects, and catalogue integrations</li>
+                <li>Developed PowerApps with complex functionality, integrating with Azure SQL tables and with SharePoint lists</li>
+                <li>Wrote multiple Azure Functions; created an Azure Webjob to integrate third-party data with Dynamics 365</li>
+                <li>Worked on a Scrum team, performed code reviews, trained and coached a junior developer</li>
+            </ul>
+        </div>
+
+        <div class="col-sm-12 itemDiv">
+            <div class="colHead">
+                NuMedics, Inc. &ndash; Web Developer (November 2014 - March 2016)
+            </div>
+            <ul>
+                <li>Rebuilt the company’s public-facing websites using ASP.NET MVC5 framework; front- and back-end work</li>
+                <li>Custom HTML canvases and Google Charts to display patient data, AJAX-updating at user request</li>
+            </ul>
+        </div>
+
+        <div class="col-sm-12 itemDiv">
+            <div class="colHead">
+                Bonzi Sports Software &ndash; Web Development Intern (May 2014 - August 2014)
+            </div>
+            <ul>
+                <li>Front- and back-end web development using ColdFusion, JavaScript (w/ jQuery) and T-SQL</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-sm-12">
+            <h5 class="sectionTitle">
+                PERSONAL PROJECTS
+                <span class="proj-note">
+                    (Live at <a href="http://www.billluckett.com" target="_blank">www.billluckett.com</a>, code at <a href="https://github.com/billluckett" target="_blank">github.com/billluckett</a>)
+                </span>
+            </h5>
+        </div>
+
+        <div class="col-sm-12 itemDiv">
+            <div class="colHead">
+                Portfolio Site <span class="proj-note"><a href="http://www.billluckett.com" target="_blank">www.billluckett.com</a></span>
+            </div>
+            <ul>
+                <li>ASP.NET Core 1.1 web app hosted in Azure, with Azure SQL storage, individual user accounts</li>
+                <li>Portal for user with "Admin" role (i.e., just me) to manage user logins and roles</li>
+                <li>My web development showcase including hobby projects of varying complexity</li>
+                <li>Role-restricted access to license plates-tracking app, storing user input in Azure SQL, reflecting data on a U.S. map in sync with checkboxes</li>
+                <li>Simpler front-end projects include interactive electoral vote map, functional cribbage board, pong doppelganger</li>
+            </ul>
+        </div>
+
+        <div class="col-sm-12 itemDiv">
+            <div class="colHead">
+                Blog <span class="proj-note"><a href="http://www.billluckett.com/blog" target="_blank">www.billluckett.com/blog</a></span>
+            </div>
+            <ul>
+                <li>ASP.NET Core web app, Azure SQL storage</li>
+                <li>Blog entries can be associated with zero or more categories, appearing on that catergory's page</li>
+                <li>Portal for "Admin" user to perform CRUD operations on blog entries, add/remove from categories</li>
+            </ul>
+        </div>
+
+        @*<div class="col-sm-12 itemDiv">
+            <div class="colHead">
+                Meal & Shopping Planner <span class="proj-note"><a href="project.Github" target="_blank">project.Github</a></span>
+            </div>
+            <ul>
+                <li>.NET Core web app with calendar UI ... etc. ... secure authentication ...</li>
+                <li>Project Description ... hosted in Azure; SQL Server DB, etc.</li>
+            </ul>
+        </div>
+
+        <div class="col-sm-12 itemDiv">
+            <div class="colHead">
+                Blog <span class="proj-note"><a href="project.Github" target="_blank">project.Github</a></span>
+            </div>
+            <ul>
+                <li>.NET Core web app with calendar UI ... etc.</li>
+                <li>Project Description ... hosted in Azure; SQL Server DB, etc.</li>
+            </ul>
+        </div>
+
+        <div class="col-sm-12 itemDiv">
+            <div class="colHead">
+                Portfolio Site(?) <span class="proj-note"><a href="project.Github" target="_blank">project.Github</a></span>
+            </div>
+            <ul>
+                <li>.NET Core web app with calendar UI ... etc.</li>
+                <li>Project Description ... hosted in Azure; SQL Server DB, etc.</li>
+            </ul>
+        </div>*@
+    </section>
+
+    <section class="row">
+        <div class="col-sm-12">
+            <h5 class="sectionTitle">EDUCATION</h5>
+        </div>
+
+        <div class="col-sm-12">
+            <ul>
+                <li>Bachelor of Science, Computer Science, Oregon State University, 2013</li>
+                <li>Bachelor of Science, Journalism, University of Wyoming</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-sm-12">
+            <h5 class="sectionTitle">ADDITIONAL EXPERIENCE</h5>
+        </div>
+
+        <div class="col-sm-12">
+            <ul>
+                <li>
+                    Wyoming Democratic Party &ndash; Executive Director (2008-2011), Communications Director (2005-2008)
+                    <ul>
+                        <li>Website content management using the Orchid Suites CMS</li>
+                    </ul>
+                </li>
+                <li>
+                    <span style="font-style: italic;">Casper Star-Tribune</span> &ndash; State Capital Bureau Reporter (1999-2005), Crime Reporter (1996-1999)
+                </li>
+            </ul>
+        </div>
+    </section>
+</div>

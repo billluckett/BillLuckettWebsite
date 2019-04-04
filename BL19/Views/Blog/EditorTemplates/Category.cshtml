@@ -1,0 +1,15 @@
+﻿@model Category
+
+<style>
+    .catGroup {
+        margin-bottom: 5px;
+    }
+</style>
+
+<div class="form-group catGroup">
+    <input id="cat_@Model.Id" type="hidden" asp-for="Id" />
+
+    <div class="checkbox">
+        <label><input class="catBox" id="box_@Model.Id" name="box_@Model.Id" type="checkbox" value="">@Model.Name</label>
+    </div>
+</div>

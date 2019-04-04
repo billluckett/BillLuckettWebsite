@@ -1,0 +1,512 @@
+﻿@{
+    ViewData["Title"] = "Electoral Map";
+    ViewData["MenuOn"] = "Projects";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Character encoding & title needed for HTML5 validation-->
+    <meta charset="UTF-8">
+    <title>Electoral Map by Bill Luckett</title>
+
+    <partial name="_FaviconLinksPartial" />
+
+    <script src="~/js/ElectoralMap/jquery-ui-1.11.4/external/jquery/jquery.js"></script>
+    <script src="~/js/ElectoralMap/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <script src="~/js/ElectoralMap/us-map-1.0.1/lib/raphael.js"></script>
+    <script src="~/js/ElectoralMap/us-map-1.0.1/jquery.usmap.js"></script>
+    <script src="~/js/ElectoralMap/statesEVs2016.js"></script>
+
+    <script>
+        var numGroups = groups.length;
+    </script>
+
+    <style>
+        body {
+            margin: 1px;
+            position: relative;
+        }
+
+            body::before {
+                content: "";
+                background: url('images/VoteButtons.jpg');
+                background-attachment: fixed;
+                opacity: 0.6;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                position: absolute;
+                z-index: -1;
+            }
+
+        #mainContainer {
+            width: 1000px;
+            margin: 0px auto;
+            padding: 25px;
+            font-family: Arial, Helvetica, sans-serif;
+            background: white;
+            z-index: 1000;
+            height: 100%;
+            overflow: auto;
+        }
+
+        .listCol {
+            float: left;
+            text-align: center;
+            min-height: 100px;
+            border: 1px solid white;
+        }
+
+        div.droppable {
+            padding: 0px;
+            text-align: center;
+            height: 100px;
+            margin: 0px auto 20px;
+        }
+
+        .miniCol {
+            float: left;
+        }
+
+        div.state {
+            width: 40px;
+            height: 15px;
+            margin: 1px;
+            padding-top: 1px;
+            border-radius: 6px;
+            border: 1px solid black;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            cursor: move;
+        }
+
+        span.state {
+            width: 40px;
+            height: 16px;
+            margin: 1px;
+            border-radius: 6px;
+            border: 1px solid black;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .ui-state-hover {
+            background-color: #f8f8f8;
+            border: 1px solid gray;
+        }
+
+        #introSection {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #mapSection {
+            display: inline-block;
+        }
+
+        #votesSection {
+            float: right;
+            border: 1px solid black;
+            border-radius: 4px;
+            width: 160px;
+            margin: 5px 20px;
+            padding: 10px;
+        }
+
+        #ratingForm {
+            border: 1px solid black;
+            width: 90px;
+            padding: 5px;
+            font-size: 12px;
+            background-color: white;
+        }
+
+        .bold-center {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .stripes {
+            width: 20%;
+            border-top: 5px solid red;
+            border-bottom: 5px solid red;
+            height: 15px;
+        }
+
+        .headline {
+            color: darkblue;
+            margin: 10px 0px 5px;
+            width: 100%;
+            border-top: 5px solid red;
+            border-bottom: 5px solid red;
+        }
+
+        .star {
+            margin: 0px 25px;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="mainContainer">
+
+        <section id="introSection">
+            <h2 class="headline">
+                <span class="star">&#10029;</span>
+                <span class="star">&#10029;</span>
+                <span class="star">&#10029;</span>
+                <span class="star">Interactive Electoral Vote Map</span>
+                <span class="star">&#10029;</span>
+                <span class="star">&#10029;</span>
+                <span class="star">&#10029;</span>
+
+            </h2>
+            <div style="font-size:13px;">
+                Update the state ratings and see the resulting Electoral College vote tally.
+                Just click-and-drag the state buttons between columns, or click a state on the map.
+            </div>
+        </section>
+
+        <section id="listSection">
+            <script>
+                for (var i = 0; i < numGroups; i++) {
+                    document.write('<div class="listCol" id="listCol' + i + '"><h4 style="margin:5px;color:' + groups[i].color + '">' + groups[i].name + '</h4><div class="droppable" id="col' + i + '"></div></div>');
+                }
+            </script>
+        </section>
+
+        <section id="mapSection" onmousemove="setCoords(event)"></section>
+
+        <section id="votesSection">
+            <h3 style="margin:2px;text-align:center;">Electoral votes</h3>
+            <div style="font-size:12px;text-align:center;">(270 needed to win)</div>
+            <p style="color:darkblue;font-weight:bold;margin:10px 0px 5px;">Democrats</p>
+            <div>
+                <div style="float:left;">Solid:</div>
+                <div id="votes0" style="float:right;">0</div>
+            </div>
+            <br>
+            <div>
+                <div style="float:left;">Likely:</div>
+                <div id="votes1" style="float:right;">0</div>
+            </div>
+            <br>
+            <div>
+                <div style="float:left;">Lean:</div>
+                <div id="votes2" style="float:right;">0</div>
+            </div>
+            <br>
+            <div style="color:darkblue;font-weight:bold;margin-top:5px;">
+                <div style="float:left;color:black;">TOTAL:</div>
+                <div id="votesDem" style="float:right;">0</div>
+            </div>
+            <br>
+            <p style="color:#d00;font-weight:bold;margin:10px 0px 5px;">Republicans</p>
+            <div>
+                <div style="float:left;">Solid:</div>
+                <div id="votes6" style="float:right;">0</div>
+            </div>
+            <br>
+            <div>
+                <div style="float:left;">Likely:</div>
+                <div id="votes5" style="float:right;">0</div>
+            </div>
+            <br>
+            <div>
+                <div style="float:left;">Lean:</div>
+                <div id="votes4" style="float:right;">0</div>
+            </div>
+            <br>
+            <div style="color:#d00;font-weight:bold;margin-top:5px;">
+                <div style="float:left;color:black;">TOTAL:</div>
+                <div id="votesRep" style="float:right;">0</div>
+            </div>
+            <br>
+            <p style="color:darkmagenta;font-weight:bold;margin:10px 0px 5px;">Toss-Up</p>
+            <div style="color:darkmagenta;font-weight:bold;margin-top:5px;">
+                <div style="float:left;color:black;">TOTAL:</div>
+                <div id="votes3" style="float:right;">0</div>
+            </div>
+            <br>
+
+            <p id="announcement" style="padding:3px;font-size:13px;height:20px;"></p>
+        </section>
+
+    </div>
+</body>
+</html>
+
+<script>
+    //var groups = [{ name: "Solid Dem", color: "#00a", states: [], sum: 0 }, ...];
+    //var states = [{ name: "AK", rating: 6, votes: 3 }, ...];
+    var states = statesEVs2016;
+    var numStates = states.length;
+    var abbrs = [];
+    var activeState;
+    var popup; // just to track cursor position when hovering over map
+
+    $(function () {
+        fixMargin(); // adjust mainContainer size
+        makeAbbrs(); // run once to help find states.indexOf(some property of the objects in states)
+        runIt(); // sets up the entire page
+    });
+
+    // gives #mainContainer equal padding and margin, based on body width; for aesthetics
+    function fixMargin() {
+        var wBody = $("body").width();
+        if (wBody > 1000) {
+            var wPad = parseInt((wBody - 1000) / 4);
+            $("#mainContainer").css("padding", "25px " + wPad + "px");
+        }
+    }
+
+    // creates array of just state abbreviations, useful for finding state index by name
+    function makeAbbrs() {
+        for (var i = 0; i < numStates; i++) {
+            abbrs[i] = states[i].name;
+        }
+    }
+
+    // sets up, or updates, the entire page based on ratings (& other data) in states[]
+    // named in honor of Patrick "Project" Jones, a.k.a., Mighty Lion,
+    // a father five times over and the best supervisor I have ever had  -Bill 11/7/15
+    function runIt() {
+        clearTheDeck();
+        groupStates();
+        var unitsPerCol = sizeColsAndDrawStates();
+        fixOuterCols(unitsPerCol);
+        triggerDragDrop();
+        updateTotals();
+        drawMap();
+    }
+
+    // clear each group's state array & sum & state draggable buttons
+    function clearTheDeck() {
+        for (var i = 0; i < numGroups; i++) {
+            groups[i].states = [];
+            groups[i].sum = 0;
+            $("#col" + i).html("");
+        }
+    }
+
+    // assign each state to the appropriate group, based on its rating
+    function groupStates() {
+        for (var i = 0; i < numStates; i++) {
+            var st = states[i];
+            var group = groups[st.rating];
+            group.states.push(st);
+            group.sum += st.votes;
+        }
+    }
+
+    // counts inner columns and sets widths, draws states,
+    // returns number of "colUnits" needed to set outerCol widths
+    function sizeColsAndDrawStates() {
+        var unitsPerCol = [];
+        var totalUnits = 0;
+
+        for (var i = 0; i < numGroups; i++) {
+            var numCols = setColWidth(i);
+            drawStates(i, numCols);
+            numCols = (numCols > 2) ? numCols : 2;
+            unitsPerCol.push(numCols);
+            totalUnits += numCols;
+        }
+
+        unitsPerCol.push(totalUnits);
+        return unitsPerCol;
+    }
+
+    // sets column widths for each group of states
+    function setColWidth(idx) {
+        var group = groups[idx];
+        var len = group.states.length;
+        var numCols = (len < 1) ? 0 : (len - 1) / 5;
+        numCols = parseInt(++numCols);
+        $("#col" + idx).width(45 * numCols);
+        return numCols;
+    }
+
+    // draws each little state-specific div in its correct column
+    function drawStates(idx, numCols) {
+        var group = groups[idx];
+        var len = group.states.length;
+        var counter = 0;
+
+        for (j = 0; j < numCols; j++) {
+            var miniCol = '<div class="miniCol" id="miniCol' + idx + '-' + j + '">';
+
+            for (k = 0; k < 5; k++) {
+                var st = group.states[counter];
+                if (counter < len) {
+                    miniCol += '<div class="state">' + st.name + ' ' + st.votes + '</div>';
+                    counter++;
+                }
+            }
+
+            miniCol += '</div>';
+            $("#col" + idx).append(miniCol);
+        }
+    }
+
+    // sizes outer columns to accommodate states and headings
+    function fixOuterCols(unitsPerCol) {
+        var totalUnits = unitsPerCol[unitsPerCol.length - 1];
+
+        for (var i = 0; i < numGroups; i++) {
+            var pct = unitsPerCol[i] * 99 / totalUnits; // trying to avoid rounding too high
+            $("#listCol" + i).width("" + pct + "%");
+            $("#listCol" + i).width($("#listCol" + i).width() - 2);
+        }
+    }
+
+    // defines changes to activate when state button/icons are dragged and dropped
+    function triggerDragDrop() {
+        $(".state").draggable({
+            revert: "invalid",
+            start: function (event, ui) {
+                $("#ratingForm").remove();
+                activeState = $(this).text().substr(0, 2);
+            }
+        });
+
+        $(".listCol").droppable({
+            activeClass: "ui-state-default",
+            hoverClass: "ui-state-hover",
+            drop: function (event, ui) {
+                //$( this ).addClass( "ui-state-highlight" );
+                var newRating = $(this).closest("div.listCol").attr("id").substr(7, 1);
+                updateActiveState(newRating);
+            }
+        });
+    }
+
+    // updates rating for activeState based on where its button/icon was dropped; notifies user
+    function updateActiveState(newRating) {
+        var stateId = abbrs.indexOf(activeState);
+        states[stateId].rating = newRating;
+        announceChange(states[stateId]);
+        runIt();
+    }
+
+    // updates rating for activeState based on where its button/icon was dropped; notifies user
+    function updateStateFromList(el) {
+        var stateId = abbrs.indexOf(activeState);
+        var word = $(el).closest("div.listCol").attr("id");
+        states[stateId].rating = word.substr(7, 1);
+        announceChange(states[stateId]);
+        runIt();
+    }
+
+    // notifies user of most recent state-ratings change at the bottom of the vote-totals div
+    function announceChange(st) {
+        $('#announcement')
+		.text(st.name + ' moved to ' + groups[st.rating].name)
+		.stop()
+		.css('backgroundColor', '#ff0')
+		.animate({ backgroundColor: '#ddd' }, 1000);
+    }
+
+    // fills in the vote totals for each category, based on state ratings
+    function updateTotals() {
+        for (var i = 0; i < numGroups; i++) {
+            $("#votes" + i).text(groups[i].sum);
+        }
+
+        $("#votesDem").text(groups[0].sum + groups[1].sum + groups[2].sum);
+        $("#votesRep").text(groups[6].sum + groups[5].sum + groups[4].sum);
+    }
+
+    // draws map with states color-coded based on ratings
+    function drawMap() {
+        $("#mapSection").html('<div id="map" style="width:744px;height:504px;"></div>'); // redraw the entire element
+        var stateColors = updateStateSpecificStyles();
+
+        $('#map').usmap({
+            stateStyles: { fill: 'gray' },
+            stateHoverStyles: { fill: 'black' },
+            stateSpecificStyles: stateColors,
+            stateSpecificHoverStyles: stateColors,
+            'click': function (event, data) {
+                activeState = data.name;
+                showRatingForm();
+            }
+        });
+
+        fixRectangles(stateColors);
+        $("body").mousemove(function () { fixRectangles(styles); });
+    }
+
+    // colors the tiny squares that represent all those county-sized states in the Northeast
+    function fixRectangles(styles) {
+        $("tspan").each(function () {
+            var key = $(this).text();
+            var color = styles[key].fill;
+            $(this).parent("text").prev("rect").attr({ fill: color });
+        });
+    }
+
+
+    // updates all state colors on the map based on rating
+    function updateStateSpecificStyles() {
+        styles = {};
+
+        for (var i = 0; i < numStates; i++) { // going from 0 to 50: AL to DC
+            var key = states[i].name;
+            var color = groups[states[i].rating].color;
+            styles[key] = { fill: color };
+        }
+
+        return styles;
+    }
+
+    // keeps track of cursor position, used for placing ratings-change popup on map
+    function setCoords(event) {
+        popup = { x: event.clientX, y: event.clientY };
+    }
+
+    // creates and displays new ratings-change popup form (and removes any pre-existing one)
+    function showRatingForm() {
+        $("#ratingForm").remove();
+        var xMax = $("#map").offset().left + $("#map").width() - 100; // 100 is very close to the popup width
+        var yMax = $("#map").offset().top + $("#map").height() - 210; // 180 is very close to popup height; plus, map's too tall by about 30
+        var x = (popup.x < xMax) ? popup.x : xMax;
+        var y = (popup.y < yMax) ? popup.y : yMax;
+        var pos = "position:absolute;left:" + x + "px;top:" + y + "px;";
+        var form = '<div id="ratingForm" style="' + pos + '">';
+        form += '<div class="bold-center">New rating<br>for ' + activeState + '</div><form>';
+
+        for (var i = 0; i < numGroups; i++) {
+            form += '<input id="radio' + i + '" type="radio" name="newRating" onclick="updateFromPopup(' + i + ')">';
+            form += '<label for="radio' + i + '">' + groups[i].name + '</label>';
+            if (i < numGroups - 1) form += '<br>';
+        }
+
+        form += '</form></div>';
+
+        $("body").append(form);
+    }
+
+    // fades out, then removes, ratings-change popup form
+    function fadeOutRatingForm() {
+        $("#ratingForm").fadeOut(500, function () {
+            $("#ratingForm").remove();
+        });
+    }
+
+    // fades out popup and updates everything accordingly
+    function updateFromPopup(newRating) {
+        fadeOutRatingForm();
+        updateActiveState(newRating);
+    }
+
+    // erase ratings-change form on click outside of form
+    $("body").on("click", function (event) {
+        fadeOutRatingForm();
+    });
+</script>

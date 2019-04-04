@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "Tic-Tac-Toe";
+    ViewData["MenuOn"] = "Projects";
+}
+
+<style>
+    .ttt-board table {
+        width: auto;
+        margin: auto;
+        font: bold 56px verdana;
+    }
+
+    .ttt-board td {
+        width: 100px;
+        height: 100px;
+        border: 10px solid black;
+    }
+</style>
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row text-center">
+    <div class="col-xs-12 ttt-board">
+        <table>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row text-center" style="height:60px;">
+    <div class="col-xs-12" id="messageDiv" style="margin-top:20px;font-weight:bold;display:none;">
+        <span id="messageSpan"></span>
+        <button type="button" onclick="newGame()" class="btn btn-success" style="margin-left:20px">Play again</button>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        var turn, winner, winners, winnable;
+        var $squares = $(".ttt-board td");
+        var $messageDiv = $("#messageDiv");
+        var $messageSpan = $("#messageSpan");
+        var s = $squares.toArray();
+        var combos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+
+        function draw(el) {
+            el.text(turn);
+            el.off("click mouseover");
+            turn = (turn == 'X') ? 'O' : 'X';
+        }
+
+        function newGame() {
+            $messageDiv.hide();
+            turn = 'X';
+            winner = "";
+            winners = [];
+            winnable = true;
+
+            $squares.empty();
+            $squares.css("background-color", "white");
+
+            $squares.mouseover(function () {
+                $(this).css("background-color", "#ddd");
+            });
+
+            $squares.mouseout(function () {
+                $(this).css("background-color", "white");
+            });
+
+            $squares.click(function () {
+                draw($(this));
+                setTimeout(analyzeBoard, 200);
+            });
+        }
+
+        function endGame() {
+            if (winnable) {
+                $messageSpan.text(winner + ' won! Game over.');
+                for (var i = 0; i < 3; i++) {
+                    $(s[winners[i]]).css("background-color", "lightgreen");
+                    $(s[winners[i]]).off("mouseover mouseout");
+                    $squares.off("mouseover mouseout");
+                }
+            } else {
+                $messageSpan.text("Tie game! No winning paths remain.");
+            }
+
+            $messageDiv.show();
+            $squares.off("click");
+        }
+
+        function check(nums) {
+            var t1 = $(s[nums[0]]).text();
+            var t2 = $(s[nums[1]]).text();
+            var t3 = $(s[nums[2]]).text();
+            if (t1 == t2 && t2 == t3 && (t1 == 'X' || t1 == 'O')) {
+                winner = t1;
+                winners = nums;
+                winnable = true;
+                return true;
+            }
+
+            var laneClosed = (t1 == 'X' || t2 == 'X' || t3 == 'X') && (t1 == 'O' || t2 == 'O' || t3 == 'O');
+            if (!laneClosed) {
+                winnable = true;
+            }
+
+            return false;
+        }
+
+        function analyzeBoard() {
+            winnable = false;
+
+            for (var i = 0; i < combos.length; i++) {
+                if (check(combos[i])) {
+                    endGame();
+                    break;
+                }
+            }
+
+            if (!winnable) {
+                endGame();
+            }
+        }
+
+        $(newGame);
+    </script>
+}
+

@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Scoreboard";
+    ViewData["MenuOn"] = "Projects";
+}
+
+<style>
+    .playerName {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    #setup, #scoreboard {
+        margin-top: 20px;
+    }
+
+        #scoreboard hr {
+            margin: 2px 0px;
+            border-top: 1px solid black;
+        }
+</style>
+
+<div class="row text-center" id="setup">
+    <div class="col-xs-12">
+        <form id="setupForm" class="form-inline">
+            <div class="form-group">
+                <label for="numPlayers">Number of players: </label>
+                <input type="number" class="form-control" id="numPlayers" style="width:75px;margin-right:25px" />
+            </div>
+            <button type="submit" class="btn btn-default">Enter</button>
+        </form>
+    </div>
+</div>
+<div class="row text-center" id="scoreboard">
+
+</div>
+
+@section Scripts
+    {
+    <script>
+        var numPlayers;
+        var players = [];
+        var colors = ["darkred", "darkblue", "darkgreen", "brown"];
+
+        function Player(name) {
+            this.name = name;
+            this.$scoreCol = null;
+            this.turns = [];
+
+            this.addScore = function (num) {
+                var prevTurn = (this.turns.length > 0) ? this.turns[this.turns.length - 1] : null;
+                var newTurn = new Turn(prevTurn, num);
+                this.turns[this.turns.length] = newTurn;
+                if (prevTurn != null)
+                    prevTurn.next = this;
+
+                this.$scoreCol.append(newTurn.html);
+            }
+        }
+
+        function Turn(prev, score) {
+            this.prev = prev;
+            this.next = null;
+            this.score = score;
+
+            if (prev != null) {
+                prev.next = this;
+                this.total = this.prev.total + this.score;
+            } else {
+                this.total = this.score;
+            }
+
+            this.html = '<div>' + score + '</div><hr /><div>' + this.total + '</div>';
+        }
+
+        function setup() {
+            var colClass = "col-xs-" + (12 / numPlayers);
+            var $scoreboard = $("#scoreboard");
+            var html = "";
+            for (var i = 0; i < numPlayers; i++) {
+                players[i] = new Player("PLAYER " + (i + 1), i);
+                html += '<div class="' + colClass + '" id="col' + i + '">' +
+                    '<div class="playerName" style="color:' + colors[i] + '">' + players[i].name + '</div>' +
+                    '<div class="scores" id="scores' + i + '"></div>' +
+                    '<div>' +
+                    '<form class="addForm form-inline" id="' + i + 'add">' +
+                    '<div class="form-group">' +
+                    '<input class="form-control" id="newScore' + i + '" style="width:50px;height:28px;margin-right:10px;" />' +
+                    '<button type="submit" class="btn btn-sm btn-default">+ Add</button>' +
+                    '</div>' +
+                    '</form>' +
+                    '</div>' +
+                    '</div>';
+            }
+
+            $scoreboard.append(html);
+
+            for (var i = 0; i < numPlayers; i++) {
+                players[i].$scoreCol = $("#scores" + i);
+            }
+
+            $(".addForm").submit(function (e) {
+                e.preventDefault();
+                var idx = parseInt($(this).attr("id"));
+                var $input = $("#newScore" + idx);
+                players[idx].addScore(parseInt($input.val()));
+                $input.val("");
+            });
+
+            $("#setup").hide();
+            $scoreboard.show();
+        }
+
+        function setNumPlayers() {
+            numPlayers = $("#numPlayers").val();
+            if (numPlayers < 2) numPlayers = 2;
+            if (numPlayers > 4) numPlayers = 4;
+            setup();
+        }
+
+        $("#setupForm").submit(function (e) {
+            e.preventDefault();
+            setNumPlayers();
+        });
+
+        $(function () {
+            // TEMPORARY FOR DEV WORK
+            numPlayers = 4;
+            setup();
+            // END TEMPORARY FOR DEV WORK
+
+        });
+
+
+    </script>
+}
+
+

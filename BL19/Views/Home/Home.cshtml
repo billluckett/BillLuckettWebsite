@@ -1,0 +1,167 @@
+﻿@{
+    ViewData["Title"] = "Home";
+    ViewData["MenuOn"] = "---";
+    Layout = "_Layout_NoContainer";
+}
+
+<style>
+    body {
+        padding-top: 41px;
+    }
+
+    .body-content {
+        padding: 40px 4%;
+        margin: 0px;
+    }
+
+        .body-content.container {
+            width: 100%;
+        }
+
+        .body-content:nth-child(2n+1) {
+            /*background-color: #e0e8f0;*/
+            /*background-color: #cee0f0;*/
+            /*background-color: #dae0e6;*/
+            /*background-color: #e0e4e8;*/
+            background-color: #e2e4ee;
+        }
+
+        .body-content img {
+            border: 1px solid black;
+            width: auto;
+            margin: 5px auto;
+        }
+
+    .parallax {
+        background-image: url("/images/BigHorns20040516.jpeg");
+        height: 200px;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center 40px;
+        position: relative;
+        top: 0px;
+    }
+
+    #page-top img {
+        margin: 0px 0px 5px;
+    }
+
+    #luckettMug {
+        width: 200px;
+    }
+
+    p {
+        font-size: 114%;
+        margin: 20px 0px 10px;
+    }
+
+    h3 {
+        margin-top: 0px;
+    }
+
+    hr {
+        margin: 0px;
+    }
+
+    .xnav {
+        white-space: nowrap;
+    }
+
+    div.xnav {
+        margin-top: 5px;
+    }
+
+    .xnavContainer {
+        width: 100%;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    @@media screen and (max-width: 767px) {
+        .parallax, #picReference {
+            display: none;
+        }
+    }
+
+</style>
+
+<div id="page-top" class="parallax"></div>
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-5 col-md-3" id="picDiv">
+                <div class="text-center" style="margin:0px auto;">
+                    <img id="luckettMug" src="~/images/LuckettBillPhotoWhiteBGSquare819x829.jpg" class="img-responsive" />
+                </div>
+            </div>
+            <div class="col-sm-7 col-md-9" id="wordsDiv" style="position:relative;">
+                <h3 style="font-style:italic;margin-top:10px;">Hi!&nbsp;&nbsp;I'm Bill Luckett.&nbsp;&nbsp;<br class="visible-xs visible-sm" />Here's a look at what I do ...</h3>
+                <p>
+                    I am a full-stack web developer. I built this website to display my personal programming projects and
+                    @*<span onclick="window.location='./Stuff';">other</span>*@
+                    <span onclick="window.location='./Home/Test';">other</span>
+                    coding experiments. I enjoy creating software that meets people's needs while keeping
+                    it as simple, efficient, user-friendly and aesthetically pleasing as possible. Feel free to check
+                    out some of my work.
+                </p>
+                <div class="row visible-md visible-lg xnavContainer" style="margin-top:20px;">
+                    <partial name="_ExcessNavPartial" />
+                </div>
+            </div>
+            <div class="clearfix visible-xs visible-sm"></div>
+
+            <div class="col-xs-12 visible-xs visible-sm xnavContainer">
+                <partial name="_ExcessNavPartial" />
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h3>About me</h3>
+                <p>
+                    I'm passionate about my family, pro sports, politics, space &amp; science &amp; tech,
+                    and making great software. I'm a "math guy" who appreciates data-based journalism
+                    (such as the work at <a href="http://www.fivethirtyeight.com" target="_blank">
+                        fivethirtyeight.com
+                    </a>). I enjoy Star Trek, classic rock, Phineas &amp; Ferb and
+                    hobby programming.
+                </p>
+                <p>
+                    I live in Forest Grove, Oregon, with my wife and our two kids. I'm originally from
+                    Sheridan, Wyoming, nestled at the foot of the Bighorn
+                    Mountains<span id="picReference"> (pictured above; photo credit: me)</span>.
+                    I graduated from the University of Wyoming and worked for almost
+                    a decade as a reporter for the Casper Star-Tribune, where I met my beautiful bride.
+                    We both changed jobs, got married, had a son, then moved to the Portland area, at
+                    which time I went back to school to become a computer programmer. And we had a daughter.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+                function setParallaxHeight() {
+                    var parallaxHeight = $("body").width() / 6;
+                    console.log("pH = " + parallaxHeight);
+                    $(".parallax").css("height", parallaxHeight);
+                }
+
+                $(function () {
+                    setParallaxHeight();
+                    $(window).on("resize", setParallaxHeight);
+                })
+
+    </script>
+}
+
